@@ -1,0 +1,44 @@
+@AIST/5.0
+
+# ═══════════════════════════════════════════════════════════════
+# LOW fidelity — core state + decisions + threads (~200 tokens)
+# Use when: technical handoff, no creative calibration needed
+# Lost: calibration, heuristics, working-style, artifacts, significance
+# ═══════════════════════════════════════════════════════════════
+
+§HEADER
+project: PROJECT_NAME
+session: SESSION_TIMESTAMP
+context: SOURCE→DESTINATION
+version: VERSION
+
+§ESSENCE
+ONE_BREATH_SUMMARY_50_TOKENS_MAX
+
+§MEMORY
++user: key-facts-about-user
++project.state: current-state
+!blocker: current-blockers
+!rejected: things-not-to-suggest
+
+§DECISIONS
+[D1] DATE "decision-slug"
+     why: rationale
+     rejected: option(reason)
+     liked: what-was-good-about-rejected
+     revisit-when: conditions
+
+§THREADS
+[T1] thread-name status:STATE effort:ESTIMATE
+     next: next-action
+
+[T2] thread-name status:STATE
+     blocked: T1
+     next: next-action
+
+§HANDOFF
+to: target-context
+focus: primary-task
+skip: what-not-to-revisit
+warn: things-to-avoid
+first-task: T1

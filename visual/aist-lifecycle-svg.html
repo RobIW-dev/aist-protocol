@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIST Protocol — Project Lifecycle (Illustrated)</title>
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Share Tech Mono', monospace;
+    background: #0a1a0a;
+    display: flex;
+    justify-content: center;
+    padding: 30px 16px;
+    min-height: 100vh;
+  }
+  .poster {
+    max-width: 960px;
+    width: 100%;
+    background: #1a2e1a;
+    border: 4px solid #3a6a3a;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 40px rgba(60,140,60,0.1);
+    position: relative;
+  }
+  .poster::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(80,200,80,0.03) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 5;
+  }
+  .poster::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 6px);
+    pointer-events: none;
+    z-index: 6;
+  }
+  .header {
+    text-align: center;
+    padding: 28px 20px 18px;
+    border-bottom: 2px solid #2a4a2a;
+    background: linear-gradient(180deg, rgba(60,140,60,0.08) 0%, transparent);
+  }
+  .header-corp { font-size: 9px; letter-spacing: 6px; color: #4a7a4a; text-transform: uppercase; margin-bottom: 8px; }
+  .header h1 {
+    font-family: 'Russo One', sans-serif;
+    font-size: clamp(20px, 4vw, 34px);
+    color: #60dd60;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-shadow: 0 0 20px rgba(96,221,96,0.3);
+    line-height: 1.2;
+  }
+  .header-sub { margin-top: 8px; font-size: 11px; color: #4a7a4a; letter-spacing: 2px; }
+  .path-titles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 2px solid #2a4a2a;
+  }
+  .path-title {
+    text-align: center;
+    padding: 10px;
+    font-family: 'Russo One', sans-serif;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  .path-title-a { color: #60dd60; border-right: 1px solid #2a4a2a; background: rgba(96,221,96,0.03); }
+  .path-title-b { color: #dd6040; border-left: 1px solid #2a4a2a; background: rgba(221,96,64,0.03); }
+  .lifecycle { display: grid; grid-template-columns: 1fr 1fr; }
+  .lifecycle-col { padding: 4px 0; }
+  .lifecycle-col-a { border-right: 1px solid #2a4a2a; }
+  .lifecycle-col-b { border-left: 1px solid #2a4a2a; }
+  .scene { padding: 8px 14px; position: relative; }
+  .scene-label {
+    font-family: 'Russo One', sans-serif;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .scene-label.green { color: #60dd60; }
+  .scene-label.amber { color: #ddaa40; }
+  .scene-label.red { color: #dd6040; }
+  .scene-label .dim { color: #4a7a4a; font-family: 'Share Tech Mono', monospace; }
+  .scene svg { display: block; margin: 0 auto; }
+  .scene-desc {
+    text-align: center;
+    font-size: 9px;
+    color: #6a9a6a;
+    margin-top: 4px;
+    line-height: 1.4;
+    letter-spacing: 0.5px;
+  }
+  .arrow-row { text-align: center; font-size: 12px; line-height: 1; padding: 2px 0; }
+  .arrow-row.g { color: #3a6a3a; }
+  .arrow-row.r { color: #6a3a3a; }
+  .outcomes-row { display: grid; grid-template-columns: 1fr 1fr; border-top: 2px solid #2a4a2a; }
+  .outcome-cell { padding: 18px 16px; text-align: center; }
+  .outcome-cell-a { border-right: 1px solid #2a4a2a; background: rgba(96,221,96,0.03); }
+  .outcome-cell-b { border-left: 1px solid #2a4a2a; background: rgba(221,96,64,0.03); }
+  .outcome-big { font-family: 'Russo One', sans-serif; font-size: 36px; line-height: 1; }
+  .outcome-big.g { color: #60dd60; text-shadow: 0 0 15px rgba(96,221,96,0.4); }
+  .outcome-big.r { color: #dd6040; text-shadow: 0 0 15px rgba(221,96,64,0.4); }
+  .outcome-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; margin-top: 6px; }
+  .outcome-label.g { color: #60dd60; }
+  .outcome-label.r { color: #dd6040; }
+  .outcome-sub { font-size: 8px; color: #4a7a4a; margin-top: 4px; letter-spacing: 1px; }
+  .footer-bar {
+    border-top: 2px solid #2a4a2a;
+    padding: 14px 20px;
+    text-align: center;
+    background: linear-gradient(0deg, rgba(60,140,60,0.06) 0%, transparent);
+  }
+  .footer-quote { font-size: 12px; color: #ddaa40; letter-spacing: 1px; }
+  .footer-quote b { color: #f0c860; }
+  .footer-meta { font-size: 8px; color: #4a7a4a; letter-spacing: 3px; text-transform: uppercase; margin-top: 8px; }
+  @media (max-width: 640px) {
+    .path-titles, .lifecycle, .outcomes-row { grid-template-columns: 1fr; }
+    .path-title-a, .lifecycle-col-a, .outcome-cell-a { border-right: none; border-bottom: 1px solid #2a4a2a; }
+    .path-title-b, .lifecycle-col-b, .outcome-cell-b { border-left: none; }
+  }
+</style>
+</head>
+<body>
+<div class="poster">
+  <div class="header">
+    <div class="header-corp">AIST Protocol · Field Guide 0.5</div>
+    <h1>Project Lifecycle Pathways</h1>
+    <div class="header-sub">Two projects start the same. Only one survives.</div>
+  </div>
+  <div class="path-titles">
+    <div class="path-title path-title-a">Pathway A: With AIST</div>
+    <div class="path-title path-title-b">Pathway B: Without AIST</div>
+  </div>
+  <div class="lifecycle">
+    <!-- LEFT: WITH AIST -->
+    <div class="lifecycle-col lifecycle-col-a">
+      <div class="scene">
+        <div class="scene-label green">Initialization <span class="dim">· Session 01</span></div>
+        <svg width="260" height="110" viewBox="0 0 260 110">
+          <!-- Desk & Monitor -->
+          <rect x="60" y="75" width="140" height="6" rx="2" fill="#2a4a2a" stroke="#3a6a3a" stroke-width="1"/>
+          <rect x="70" y="81" width="8" height="20" rx="1" fill="#2a4a2a"/>
+          <rect x="182" y="81" width="8" height="20" rx="1" fill="#2a4a2a"/>
+          <rect x="90" y="38" width="80" height="38" rx="3" fill="#0d1f0d" stroke="#3a6a3a" stroke-width="1.5"/>
+          <rect x="125" y="76" width="10" height="6" fill="#2a4a2a"/>
+          <rect x="94" y="42" width="72" height="30" rx="1" fill="#0a150a"/>
+          <!-- Sprout -->
+          <line x1="130" y1="68" x2="130" y2="58" stroke="#60dd60" stroke-width="2" stroke-linecap="round"/>
+          <ellipse cx="126" cy="57" rx="5" ry="4" fill="none" stroke="#60dd60" stroke-width="1.5"/>
+          <ellipse cx="134" cy="57" rx="5" ry="4" fill="none" stroke="#60dd60" stroke-width="1.5"/>
+          <line x1="118" y1="69" x2="142" y2="69" stroke="#4a7a4a" stroke-width="2" stroke-linecap="round"/>
+          <!-- Character: happy at desk -->
+          <circle cx="50" cy="52" r="10" fill="none" stroke="#60dd60" stroke-width="2"/>
+          <path d="M45,55 Q50,60 55,55" fill="none" stroke="#60dd60" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="47" cy="50" r="1.5" fill="#60dd60"/>
+          <circle cx="53" cy="50" r="1.5" fill="#60dd60"/>
+          <line x1="50" y1="62" x2="50" y2="82" stroke="#60dd60" stroke-width="2" stroke-linecap="round"/>
+          <line x1="50" y1="68" x2="70" y2="75" stroke="#60dd60" stroke-width="2" stroke-linecap="round"/>
+          <line x1="50" y1="82" x2="42" y2="96" stroke="#60dd60" stroke-width="2" stroke-linecap="round"/>
+          <line x1="50" y1="82" x2="58" y2="96" stroke="#60dd60" stroke-width="2" stroke-linecap="round"/>
+          <path d="M38,80 L38,98 M62,80 L62,98" stroke="#3a6a3a" stroke-width="1.5"/>
+          <line x1="35" y1="98" x2="65" y2="98" stroke="#3a6a3a" stroke-width="1.5"/>
+          <text x="210" y="58" fill="#4a7a4a" font-size="8" font-family="Share Tech Mono" text-anchor="middle">NEW</text>
+          <text x="210" y="68" fill="#4a7a4a" font-size="8" font-family="Share Tech Mono" text-anchor="middle">PROJECT</text>
+        </svg>
+        <div class="scene-desc">Full context. Blank canvas. Everything possible.</div>
+      </div>
+      <div class="arrow-row g">&#9661;</div>
+      <div class="scene">
+        <div class="scene-label green">Active Growth <span class="dim">· Session 02</span></div>
+        <svg width="260" height="110" viewBox="0 0 260 110">
+          <rect x="60" y="75" width="140" height="6" rx="2" fill="#2a4a2a" stroke="#3a6a3a" stroke-width="1"/>
+          <rect x="70" y="81" width="8" height="20" rx="1" fill="#2a4a2a"/>
+          <rect x="182" y="81" width="8" height="20" rx="1" fill="#2a4a2a"/>
+          <rect x="90" y="38" width="80" height="38" rx="3" fill="#0d1f0d" stroke="#3a6a3a" stroke-width="1.5"/>
+          <rect x="125" y="76" width="10" height="6" fill="#2a4a2a"/>
+          <rect x="94" y="42" width="72" height="30" rx="1" fill="#0a150a"/>
+          <!-- Taller plant -->
+          <line x1="130" y1="68" x2="130" y2="50" stroke="#60dd60" stroke-width="2" stroke-linecap="round"/>
+          <ellipse cx="124" cy="52" rx="6" ry="4" fill="none" stroke="#60dd60" stroke-width="1.5"/>
+          <ellipse cx="136" cy="52" rx="6" ry="4" fill="none" stroke="#60dd60" stroke-width="1.5"/>
+          <ellipse cx="124" cy="58" rx="5" ry="3" fill="none" stroke="#4aaa4a" stroke-width="1"/>
+          <ellipse cx="136" cy="58" rx="5" ry="3" fill="none" stroke="#4aaa4a" stroke-width="1"/>
+          <line x1="118" y1="69" x2="142" y2="69" stroke="#4a7a4a" stroke-width="2" stroke-linecap="round"/>
+          <rect x="96" y="44" width="18" height="8" rx="1" fill="#1a3a1a" stroke="#3a6a3a" stroke-width="0.5"/>
+          <text x="105" y="50" fill="#60dd60" font-size="5" font-family="Share Tech Mono" text-anchor="middle">AIST</text>
+          <!-- Character: confident, thumbs up -->
+          <circle cx="50" cy="52" r="10" fill="none" stroke="#60dd60" stroke-width="2"/>
+          <path d="M45,55 Q50,60 55,55" fill="none" stroke="#60dd60" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="47" cy="50" r="1.5" fill="#60dd60"/>
+          <circle cx="53" cy="50" r="1.5" fill="#60dd60"/>
+          <line x1="50" y1="62" x2="50" y2="82" stroke="#60dd60" stroke-width="2" stroke-linecap="round"/>
+          <line x1="50" y1="68" x2="70" y2="75" stroke="#60dd60" stroke-width="2" stroke-linecap="round"/>
+          <line x1="50" y1="68" x2="36" y2="62" stroke="#60dd60" stroke-width="2" stroke-linecap="round"/>
+          <line x1="36" y1="62" x2="36" y2="55" stroke="#60dd60" stroke-width="2" stroke-linecap="round"/>
+          <line x1="50" y1="82" x2="42" y2="96" stroke="#60dd60" stroke-width="2" stroke-linecap="round"/>
+          <line x1="50" y1="82" x2="58" y2="96" stroke="#60dd60" stroke-width="2" stroke-linecap="round"/>
+          <path d="M38,80 L38,98 M62,80 L62,98" stroke="#3a6a3a" stroke-width="1.5"/>
+          <line x1="35" y1="98" x2="65" y2="98" stroke="#3a6a3a" stroke-width="1.5"/>
+          <text x="210" y="56" fill="#60dd60" font-size="7" font-family="Share Tech Mono" text-anchor="middle">950 tokens</text>
+          <text x="210" y="66" fill="#4a7a4a" font-size="7" font-family="Share Tech Mono" text-anchor="middle">88% free</text>
+        </svg>
+        <div class="scene-desc">AIST loaded. Full state. 88% context free for work.</div>
+      </div>
+      <div class="arrow-row g">&#9661;</div>
+      <div class="scene">
+        <div class="scene-label green">Full Bloom <span class="dim">· Session 10+</span></div>
+        <svg width="260" height="110" viewBox="0 0 260 110">
+          <rect x="60" y="75" width="140" height="6" rx="2" fill="#2a4a2a" stroke="#3a6a3a" stroke-width="1"/>
+          <rect x="70" y="81" width="8" height="20" rx="1" fill="#2a4a2a"/>
+          <rect x="182" y="81" width="8" height="20" rx="1" fill="#2a4a2a"/>
+          <rect x="90" y="38" width="80" height="38" rx="3" fill="#0d1f0d" stroke="#3a6a3a" stroke-width="1.5"/>
+          <rect x="125" y="76" width="10" height="6" fill="#2a4a2a"/>
+          <rect x="94" y="42" width="72" height="30" rx="1" fill="#0a150a"/>
+          <!-- Full tree -->
+          <line x1="130" y1="68" x2="130" y2="48" stroke="#60dd60" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="130" cy="48" r="8" fill="none" stroke="#60dd60" stroke-width="1.5"/>
+          <circle cx="124" cy="52" r="6" fill="none" stroke="#4aaa4a" stroke-width="1"/>
+          <circle cx="136" cy="52" r="6" fill="none" stroke="#4aaa4a" stroke-width="1"/>
+          <circle cx="130" cy="44" r="2" fill="#ddaa40"/>
+          <circle cx="125" cy="49" r="1.5" fill="#ddaa40"/>
+          <circle cx="135" cy="49" r="1.5" fill="#ddaa40"/>
+          <line x1="118" y1="69" x2="142" y2="69" stroke="#4a7a4a" stroke-width="2" stroke-linecap="round"/>
+          <rect x="96" y="44" width="18" height="8" rx="1" fill="#1a3a1a" stroke="#3a6a3a" stroke-width="0.5"/>
+          <text x="105" y="50" fill="#60dd60" font-size="5" font-family="Share Tech Mono" text-anchor="middle">AIST</text>
+          <!-- Character: feet up, relaxed -->
+          <circle cx="44" cy="55" r="10" fill="none" stroke="#60dd60" stroke-width="2"/>
+          <path d="M39,58 Q44,63 49,58" fill="none" stroke="#60dd60" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="41" cy="53" r="1.5" fill="#60dd60"/>
+          <circle cx="47" cy="53" r="1.5" fill="#60dd60"/>
+          <line x1="44" y1="65" x2="48" y2="85" stroke="#60dd60" stroke-width="2" stroke-linecap="round"/>
+          <line x1="44" y1="72" x2="32" y2="68" stroke="#60dd60" stroke-width="2" stroke-linecap="round"/>
+          <line x1="48" y1="85" x2="62" y2="82" stroke="#60dd60" stroke-width="2" stroke-linecap="round"/>
+          <line x1="48" y1="85" x2="58" y2="95" stroke="#60dd60" stroke-width="2" stroke-linecap="round"/>
+          <path d="M32,82 L36,98 M56,82 L60,98" stroke="#3a6a3a" stroke-width="1.5"/>
+          <line x1="33" y1="98" x2="63" y2="98" stroke="#3a6a3a" stroke-width="1.5"/>
+          <text x="22" y="48" fill="#ddaa40" font-size="10">&#10022;</text>
+          <text x="210" y="52" fill="#60dd60" font-size="7" font-family="Share Tech Mono" text-anchor="middle">STILL 950</text>
+          <text x="210" y="62" fill="#60dd60" font-size="7" font-family="Share Tech Mono" text-anchor="middle">tokens</text>
+          <text x="210" y="74" fill="#4a7a4a" font-size="7" font-family="Share Tech Mono" text-anchor="middle">STILL 88%</text>
+        </svg>
+        <div class="scene-desc">Same cost. Project thriving. Operator thriving.</div>
+      </div>
+      <div class="arrow-row g">&#9661;</div>
+      <div class="scene">
+        <div class="scene-label green">Eternal Bloom <span class="dim">· Session 50+</span></div>
+        <svg width="260" height="110" viewBox="0 0 260 110">
+          <rect x="60" y="75" width="140" height="6" rx="2" fill="#2a4a2a" stroke="#3a6a3a" stroke-width="1"/>
+          <rect x="70" y="81" width="8" height="20" rx="1" fill="#2a4a2a"/>
+          <rect x="182" y="81" width="8" height="20" rx="1" fill="#2a4a2a"/>
+          <rect x="90" y="38" width="80" height="38" rx="3" fill="#0d1f0d" stroke="#60dd60" stroke-width="2"/>
+          <rect x="125" y="76" width="10" height="6" fill="#2a4a2a"/>
+          <rect x="94" y="42" width="72" height="30" rx="1" fill="#0a150a"/>
+          <!-- Magnificent tree with fruits -->
+          <line x1="130" y1="68" x2="130" y2="46" stroke="#60dd60" stroke-width="3" stroke-linecap="round"/>
+          <line x1="130" y1="54" x2="118" y2="47" stroke="#60dd60" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="130" y1="54" x2="142" y2="47" stroke="#60dd60" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="130" y1="50" x2="122" y2="44" stroke="#60dd60" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="130" y1="50" x2="138" y2="44" stroke="#60dd60" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="130" cy="46" r="12" fill="rgba(96,221,96,0.1)" stroke="none"/>
+          <circle cx="118" cy="47" r="2.5" fill="#ddaa40"/>
+          <circle cx="142" cy="47" r="2.5" fill="#ddaa40"/>
+          <circle cx="122" cy="44" r="2" fill="#f0c860"/>
+          <circle cx="138" cy="44" r="2" fill="#f0c860"/>
+          <circle cx="130" cy="43" r="3" fill="#ddaa40" stroke="#f0c860" stroke-width="0.5"/>
+          <line x1="118" y1="69" x2="142" y2="69" stroke="#4a7a4a" stroke-width="2" stroke-linecap="round"/>
+          <!-- Character: celebrating -->
+          <circle cx="44" cy="50" r="10" fill="none" stroke="#60dd60" stroke-width="2"/>
+          <path d="M39,52 Q44,58 49,52" fill="none" stroke="#60dd60" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="41" cy="48" r="1.5" fill="#60dd60"/>
+          <circle cx="47" cy="48" r="1.5" fill="#60dd60"/>
+          <line x1="44" y1="60" x2="44" y2="82" stroke="#60dd60" stroke-width="2" stroke-linecap="round"/>
+          <line x1="44" y1="66" x2="30" y2="52" stroke="#60dd60" stroke-width="2" stroke-linecap="round"/>
+          <line x1="44" y1="66" x2="58" y2="52" stroke="#60dd60" stroke-width="2" stroke-linecap="round"/>
+          <line x1="44" y1="82" x2="36" y2="96" stroke="#60dd60" stroke-width="2" stroke-linecap="round"/>
+          <line x1="44" y1="82" x2="52" y2="96" stroke="#60dd60" stroke-width="2" stroke-linecap="round"/>
+          <text x="26" y="46" fill="#ddaa40" font-size="8">&#10022;</text>
+          <text x="60" y="48" fill="#ddaa40" font-size="6">&#10022;</text>
+          <text x="18" y="58" fill="#60dd60" font-size="6">&#10022;</text>
+          <text x="210" y="56" fill="#60dd60" font-size="22" font-family="Russo One" text-anchor="middle">&infin;</text>
+          <text x="210" y="70" fill="#4a7a4a" font-size="7" font-family="Share Tech Mono" text-anchor="middle">SESSIONS</text>
+        </svg>
+        <div class="scene-desc">Project bears fruit forever. Switch models anytime.</div>
+      </div>
+    </div>
+    <!-- RIGHT: WITHOUT AIST -->
+    <div class="lifecycle-col lifecycle-col-b">
+      <div class="scene">
+        <div class="scene-label amber">Initialization <span class="dim">· Session 01</span></div>
+        <svg width="260" height="110" viewBox="0 0 260 110">
+          <rect x="60" y="75" width="140" height="6" rx="2" fill="#2a4a2a" stroke="#3a6a3a" stroke-width="1"/>
+          <rect x="70" y="81" width="8" height="20" rx="1" fill="#2a4a2a"/>
+          <rect x="182" y="81" width="8" height="20" rx="1" fill="#2a4a2a"/>
+          <rect x="90" y="38" width="80" height="38" rx="3" fill="#0d1f0d" stroke="#3a6a3a" stroke-width="1.5"/>
+          <rect x="125" y="76" width="10" height="6" fill="#2a4a2a"/>
+          <rect x="94" y="42" width="72" height="30" rx="1" fill="#0a150a"/>
+          <line x1="130" y1="68" x2="130" y2="58" stroke="#60dd60" stroke-width="2" stroke-linecap="round"/>
+          <ellipse cx="126" cy="57" rx="5" ry="4" fill="none" stroke="#60dd60" stroke-width="1.5"/>
+          <ellipse cx="134" cy="57" rx="5" ry="4" fill="none" stroke="#60dd60" stroke-width="1.5"/>
+          <line x1="118" y1="69" x2="142" y2="69" stroke="#4a7a4a" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="50" cy="52" r="10" fill="none" stroke="#ddaa40" stroke-width="2"/>
+          <path d="M45,55 Q50,60 55,55" fill="none" stroke="#ddaa40" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="47" cy="50" r="1.5" fill="#ddaa40"/>
+          <circle cx="53" cy="50" r="1.5" fill="#ddaa40"/>
+          <line x1="50" y1="62" x2="50" y2="82" stroke="#ddaa40" stroke-width="2" stroke-linecap="round"/>
+          <line x1="50" y1="68" x2="70" y2="75" stroke="#ddaa40" stroke-width="2" stroke-linecap="round"/>
+          <line x1="50" y1="82" x2="42" y2="96" stroke="#ddaa40" stroke-width="2" stroke-linecap="round"/>
+          <line x1="50" y1="82" x2="58" y2="96" stroke="#ddaa40" stroke-width="2" stroke-linecap="round"/>
+          <path d="M38,80 L38,98 M62,80 L62,98" stroke="#3a6a3a" stroke-width="1.5"/>
+          <line x1="35" y1="98" x2="65" y2="98" stroke="#3a6a3a" stroke-width="1.5"/>
+          <text x="210" y="58" fill="#4a7a4a" font-size="8" font-family="Share Tech Mono" text-anchor="middle">SAME</text>
+          <text x="210" y="68" fill="#4a7a4a" font-size="8" font-family="Share Tech Mono" text-anchor="middle">START</text>
+        </svg>
+        <div class="scene-desc">Same start. Same model. No preservation plan.</div>
+      </div>
+      <div class="arrow-row r">&#9661;</div>
+      <div class="scene">
+        <div class="scene-label amber">Context Pressure <span class="dim">· Session 02</span></div>
+        <svg width="260" height="110" viewBox="0 0 260 110">
+          <rect x="60" y="75" width="140" height="6" rx="2" fill="#2a4a2a" stroke="#3a6a3a" stroke-width="1"/>
+          <rect x="70" y="81" width="8" height="20" rx="1" fill="#2a4a2a"/>
+          <rect x="182" y="81" width="8" height="20" rx="1" fill="#2a4a2a"/>
+          <rect x="90" y="38" width="80" height="38" rx="3" fill="#0d1f0d" stroke="#6a4a2a" stroke-width="1.5"/>
+          <rect x="125" y="76" width="10" height="6" fill="#2a4a2a"/>
+          <rect x="94" y="42" width="72" height="30" rx="1" fill="#0a150a"/>
+          <!-- Wilting -->
+          <line x1="130" y1="68" x2="130" y2="56" stroke="#aaaa40" stroke-width="2" stroke-linecap="round"/>
+          <ellipse cx="125" cy="56" rx="5" ry="3" fill="none" stroke="#aaaa40" stroke-width="1.5" transform="rotate(-10,125,56)"/>
+          <ellipse cx="135" cy="57" rx="5" ry="3" fill="none" stroke="#aaaa40" stroke-width="1.5" transform="rotate(5,135,57)"/>
+          <line x1="118" y1="69" x2="142" y2="69" stroke="#4a7a4a" stroke-width="2" stroke-linecap="round"/>
+          <!-- Text flooding screen -->
+          <line x1="97" y1="45" x2="115" y2="45" stroke="#6a4a2a" stroke-width="1" opacity="0.6"/>
+          <line x1="97" y1="48" x2="120" y2="48" stroke="#6a4a2a" stroke-width="1" opacity="0.6"/>
+          <line x1="97" y1="51" x2="112" y2="51" stroke="#6a4a2a" stroke-width="1" opacity="0.6"/>
+          <!-- Worried character -->
+          <circle cx="50" cy="52" r="10" fill="none" stroke="#ddaa40" stroke-width="2"/>
+          <path d="M45,57 Q50,55 55,57" fill="none" stroke="#ddaa40" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="47" cy="50" r="1.5" fill="#ddaa40"/>
+          <circle cx="53" cy="50" r="1.5" fill="#ddaa40"/>
+          <line x1="45" y1="46" x2="49" y2="45" stroke="#ddaa40" stroke-width="1" stroke-linecap="round"/>
+          <line x1="50" y1="62" x2="50" y2="82" stroke="#ddaa40" stroke-width="2" stroke-linecap="round"/>
+          <line x1="50" y1="68" x2="70" y2="75" stroke="#ddaa40" stroke-width="2" stroke-linecap="round"/>
+          <line x1="50" y1="68" x2="38" y2="58" stroke="#ddaa40" stroke-width="2" stroke-linecap="round"/>
+          <line x1="50" y1="82" x2="42" y2="96" stroke="#ddaa40" stroke-width="2" stroke-linecap="round"/>
+          <line x1="50" y1="82" x2="58" y2="96" stroke="#ddaa40" stroke-width="2" stroke-linecap="round"/>
+          <path d="M38,80 L38,98 M62,80 L62,98" stroke="#3a6a3a" stroke-width="1.5"/>
+          <line x1="35" y1="98" x2="65" y2="98" stroke="#3a6a3a" stroke-width="1.5"/>
+          <text x="210" y="56" fill="#ddaa40" font-size="7" font-family="Share Tech Mono" text-anchor="middle">~2800 tok</text>
+          <text x="210" y="66" fill="#6a4a2a" font-size="7" font-family="Share Tech Mono" text-anchor="middle">65% free</text>
+        </svg>
+        <div class="scene-desc">Pasting recaps. Context draining. Plant stressed.</div>
+      </div>
+      <div class="arrow-row r">&#9661;</div>
+      <div class="scene">
+        <div class="scene-label red">Context Starvation <span class="dim">· Session 03&ndash;04</span></div>
+        <svg width="260" height="110" viewBox="0 0 260 110">
+          <rect x="60" y="75" width="140" height="6" rx="2" fill="#2a4a2a" stroke="#3a6a3a" stroke-width="1"/>
+          <rect x="70" y="81" width="8" height="20" rx="1" fill="#2a4a2a"/>
+          <rect x="182" y="81" width="8" height="20" rx="1" fill="#2a4a2a"/>
+          <rect x="90" y="38" width="80" height="38" rx="3" fill="#0d1f0d" stroke="#6a3a2a" stroke-width="1.5"/>
+          <rect x="125" y="76" width="10" height="6" fill="#2a4a2a"/>
+          <rect x="94" y="42" width="72" height="30" rx="1" fill="#0a150a"/>
+          <!-- Drooping brown plant -->
+          <path d="M130,68 Q130,60 132,56" stroke="#8a6a30" stroke-width="2" stroke-linecap="round" fill="none"/>
+          <ellipse cx="128" cy="58" rx="4" ry="2.5" fill="none" stroke="#8a6a30" stroke-width="1.5" transform="rotate(-30,128,58)"/>
+          <ellipse cx="134" cy="56" rx="4" ry="2" fill="none" stroke="#6a4a20" stroke-width="1" transform="rotate(20,134,56)"/>
+          <line x1="118" y1="69" x2="142" y2="69" stroke="#4a5a3a" stroke-width="2" stroke-linecap="round"/>
+          <!-- Screen filled with text -->
+          <line x1="97" y1="44" x2="163" y2="44" stroke="#6a3a2a" stroke-width="1" opacity="0.5"/>
+          <line x1="97" y1="47" x2="160" y2="47" stroke="#6a3a2a" stroke-width="1" opacity="0.5"/>
+          <line x1="97" y1="50" x2="158" y2="50" stroke="#6a3a2a" stroke-width="1" opacity="0.5"/>
+          <line x1="97" y1="53" x2="155" y2="53" stroke="#6a3a2a" stroke-width="1" opacity="0.4"/>
+          <line x1="97" y1="56" x2="150" y2="56" stroke="#6a3a2a" stroke-width="1" opacity="0.3"/>
+          <!-- Head in hands -->
+          <circle cx="50" cy="52" r="10" fill="none" stroke="#dd6040" stroke-width="2"/>
+          <path d="M45,58 Q50,54 55,58" fill="none" stroke="#dd6040" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="45" y1="50" x2="49" y2="50" stroke="#dd6040" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="51" y1="50" x2="55" y2="50" stroke="#dd6040" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="38" y1="42" x2="35" y2="39" stroke="#dd6040" stroke-width="1" stroke-linecap="round"/>
+          <line x1="42" y1="40" x2="40" y2="36" stroke="#dd6040" stroke-width="1" stroke-linecap="round"/>
+          <line x1="50" y1="62" x2="50" y2="82" stroke="#dd6040" stroke-width="2" stroke-linecap="round"/>
+          <line x1="50" y1="68" x2="40" y2="48" stroke="#dd6040" stroke-width="2" stroke-linecap="round"/>
+          <line x1="50" y1="68" x2="60" y2="48" stroke="#dd6040" stroke-width="2" stroke-linecap="round"/>
+          <line x1="50" y1="82" x2="42" y2="96" stroke="#dd6040" stroke-width="2" stroke-linecap="round"/>
+          <line x1="50" y1="82" x2="58" y2="96" stroke="#dd6040" stroke-width="2" stroke-linecap="round"/>
+          <path d="M38,80 L38,98 M62,80 L62,98" stroke="#3a6a3a" stroke-width="1.5"/>
+          <line x1="35" y1="98" x2="65" y2="98" stroke="#3a6a3a" stroke-width="1.5"/>
+          <text x="210" y="56" fill="#dd6040" font-size="7" font-family="Share Tech Mono" text-anchor="middle">~5700 tok</text>
+          <text x="210" y="66" fill="#6a3a2a" font-size="7" font-family="Share Tech Mono" text-anchor="middle">30% free</text>
+        </svg>
+        <div class="scene-desc">Recap flooding. Model hallucinating. Hope fading.</div>
+      </div>
+      <div class="arrow-row r">&#9661;</div>
+      <div class="scene">
+        <div class="scene-label red">Terminal Failure <span class="dim">· Session 05</span></div>
+        <svg width="260" height="110" viewBox="0 0 260 110">
+          <rect x="60" y="75" width="140" height="6" rx="2" fill="#2a4a2a" stroke="#3a4a3a" stroke-width="1"/>
+          <rect x="70" y="81" width="8" height="20" rx="1" fill="#2a4a2a"/>
+          <rect x="182" y="81" width="8" height="20" rx="1" fill="#2a4a2a"/>
+          <rect x="90" y="38" width="80" height="38" rx="3" fill="#0d1f0d" stroke="#4a2a2a" stroke-width="1.5"/>
+          <rect x="125" y="76" width="10" height="6" fill="#2a4a2a"/>
+          <rect x="94" y="42" width="72" height="30" rx="1" fill="#0a0a0a"/>
+          <!-- Skull on screen -->
+          <circle cx="130" cy="52" r="7" fill="none" stroke="#dd6040" stroke-width="1.5"/>
+          <circle cx="127" cy="50" r="1.5" fill="#dd6040"/>
+          <circle cx="133" cy="50" r="1.5" fill="#dd6040"/>
+          <path d="M126,55 L128,54 L130,55 L132,54 L134,55" fill="none" stroke="#dd6040" stroke-width="1" stroke-linecap="round"/>
+          <line x1="120" y1="60" x2="140" y2="64" stroke="#dd6040" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="140" y1="60" x2="120" y2="64" stroke="#dd6040" stroke-width="1.5" stroke-linecap="round"/>
+          <!-- Dead stump -->
+          <line x1="130" y1="68" x2="130" y2="64" stroke="#4a3a2a" stroke-width="2" stroke-linecap="round"/>
+          <line x1="118" y1="69" x2="142" y2="69" stroke="#3a3a2a" stroke-width="2" stroke-linecap="round"/>
+          <!-- Slumped character -->
+          <circle cx="72" cy="60" r="10" fill="none" stroke="#6a3a2a" stroke-width="2"/>
+          <line x1="68" y1="57" x2="71" y2="60" stroke="#6a3a2a" stroke-width="1.5"/>
+          <line x1="71" y1="57" x2="68" y2="60" stroke="#6a3a2a" stroke-width="1.5"/>
+          <line x1="73" y1="57" x2="76" y2="60" stroke="#6a3a2a" stroke-width="1.5"/>
+          <line x1="76" y1="57" x2="73" y2="60" stroke="#6a3a2a" stroke-width="1.5"/>
+          <path d="M72,70 Q75,78 82,76" fill="none" stroke="#6a3a2a" stroke-width="2" stroke-linecap="round"/>
+          <line x1="72" y1="72" x2="88" y2="74" stroke="#6a3a2a" stroke-width="2" stroke-linecap="round"/>
+          <line x1="78" y1="80" x2="70" y2="96" stroke="#6a3a2a" stroke-width="2" stroke-linecap="round"/>
+          <line x1="78" y1="80" x2="86" y2="96" stroke="#6a3a2a" stroke-width="2" stroke-linecap="round"/>
+          <path d="M60,82 L58,98 M84,82 L88,98" stroke="#3a4a3a" stroke-width="1.5"/>
+          <text x="210" y="52" fill="#dd6040" font-size="7" font-family="Share Tech Mono" text-anchor="middle">CONTEXT</text>
+          <text x="210" y="62" fill="#dd6040" font-size="7" font-family="Share Tech Mono" text-anchor="middle">EXHAUSTED</text>
+          <text x="210" y="74" fill="#6a3a2a" font-size="7" font-family="Share Tech Mono" text-anchor="middle">0% free</text>
+        </svg>
+        <div class="scene-desc">No space. Skull on screen. Start over from scratch.</div>
+      </div>
+    </div>
+  </div>
+  <div class="outcomes-row">
+    <div class="outcome-cell outcome-cell-a">
+      <div class="outcome-big g">&infin;</div>
+      <div class="outcome-label g">Eternal Bloom</div>
+      <div class="outcome-sub">Same 950 tokens. Every session. Any LLM.</div>
+    </div>
+    <div class="outcome-cell outcome-cell-b">
+      <div class="outcome-big r">&#9760;</div>
+      <div class="outcome-label r">Terminal Failure</div>
+      <div class="outcome-sub">~3&ndash;5 sessions on 8K. Then nothing.</div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <div class="footer-quote">Recaps <b>grow</b>. Handoffs <b>don't</b>.</div>
+    <div class="footer-meta">AIST Protocol v0.5 · Open Source · CC BY-SA 4.0 · Plain text · Any LLM</div>
+  </div>
+</div>
+</body>
+</html>

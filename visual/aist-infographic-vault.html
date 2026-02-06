@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIST Protocol — Project Lifespan Pathways</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Russo+One&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --vault-blue: #1a3a5c;
+    --vault-blue-dark: #0d2137;
+    --vault-blue-deep: #091520;
+    --panel: #122a42;
+    --panel-light: #1b4268;
+    --border-glow: #3a8fd4;
+    --border-dim: #1e5a8a;
+    --amber: #d4a843;
+    --amber-bright: #f0c860;
+    --amber-dim: #8a7030;
+    --green: #4adf7c;
+    --green-dim: #2a8f4c;
+    --green-bright: #6eff9e;
+    --red: #e04040;
+    --red-dim: #8a2020;
+    --red-bright: #ff6060;
+    --cream: #c8d8e8;
+    --text: #a0c4e0;
+    --text-dim: #5a7a9a;
+    --crt-line: rgba(0,0,0,0.06);
+  }
+
+  body {
+    font-family: 'Share Tech Mono', monospace;
+    background: var(--vault-blue-deep);
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    padding: 30px 16px;
+    min-height: 100vh;
+  }
+
+  .poster {
+    max-width: 960px;
+    width: 100%;
+    position: relative;
+    background: var(--vault-blue-dark);
+    border: 3px solid var(--border-glow);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow:
+      0 0 30px rgba(58,143,212,0.15),
+      0 0 80px rgba(58,143,212,0.05),
+      inset 0 0 60px rgba(0,0,0,0.3);
+  }
+
+  /* CRT scanline overlay */
+  .poster::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      var(--crt-line) 2px,
+      var(--crt-line) 4px
+    );
+    z-index: 100;
+    border-radius: 12px;
+  }
+
+  /* Corner rivets */
+  .rivet {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, #5a8ab0, #2a4a6a 60%, #1a3050);
+    border: 1px solid #3a7aaa;
+    z-index: 50;
+  }
+  .rivet-tl { top: 8px; left: 8px; }
+  .rivet-tr { top: 8px; right: 8px; }
+  .rivet-bl { bottom: 8px; left: 8px; }
+  .rivet-br { bottom: 8px; right: 8px; }
+
+  /* === HEADER === */
+  .header {
+    text-align: center;
+    padding: 28px 24px 20px;
+    border-bottom: 2px solid var(--border-dim);
+    position: relative;
+    background: linear-gradient(180deg, rgba(58,143,212,0.08) 0%, transparent 100%);
+  }
+  .header-corp {
+    font-size: 9px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-family: 'Russo One', sans-serif;
+    font-size: clamp(22px, 4vw, 38px);
+    color: var(--amber-bright);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-shadow: 0 0 20px rgba(240,200,96,0.3);
+    line-height: 1.2;
+  }
+  .header-sub {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+  }
+  .header-sub .g { color: var(--green); }
+  .header-sub .r { color: var(--red-bright); }
+
+  /* Classification badge */
+  .classified {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 3px 14px;
+    border: 1px solid var(--amber-dim);
+    border-radius: 2px;
+    font-size: 8px;
+    letter-spacing: 4px;
+    color: var(--amber);
+    text-transform: uppercase;
+  }
+
+  /* === PATH LABELS === */
+  .path-labels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 2px solid var(--border-dim);
+  }
+  .path-label {
+    text-align: center;
+    padding: 12px;
+    font-family: 'Russo One', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  .path-label-a {
+    border-right: 1px solid var(--border-dim);
+    color: var(--green);
+    background: rgba(74,223,124,0.04);
+  }
+  .path-label-b {
+    border-left: 1px solid var(--border-dim);
+    color: var(--red-bright);
+    background: rgba(224,64,64,0.04);
+  }
+  .path-label span {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* === STAGES GRID === */
+  .stages {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .stages-col {
+    position: relative;
+  }
+  .stages-col-a { border-right: 1px solid var(--border-dim); }
+  .stages-col-b { border-left: 1px solid var(--border-dim); }
+
+  /* Individual stage */
+  .stage {
+    padding: 16px 18px;
+    border-bottom: 1px solid rgba(30,90,138,0.4);
+    position: relative;
+  }
+  .stage:last-child { border-bottom: none; }
+
+  .stage-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .stage-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    border: 2px solid;
+  }
+  .stage-icon.ok {
+    border-color: var(--green-dim);
+    background: rgba(74,223,124,0.08);
+    color: var(--green);
+  }
+  .stage-icon.warn {
+    border-color: var(--amber-dim);
+    background: rgba(212,168,67,0.08);
+    color: var(--amber);
+  }
+  .stage-icon.bad {
+    border-color: var(--red-dim);
+    background: rgba(224,64,64,0.08);
+    color: var(--red-bright);
+  }
+  .stage-icon.dead {
+    border-color: var(--red-dim);
+    background: rgba(224,64,64,0.15);
+    color: var(--red-bright);
+  }
+
+  .stage-title {
+    font-family: 'Russo One', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .stage-title.green { color: var(--green); }
+  .stage-title.amber { color: var(--amber); }
+  .stage-title.red { color: var(--red-bright); }
+
+  .stage-session {
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+
+  .stage-body {
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  /* Mini context bar */
+  .ctx-bar {
+    margin-top: 8px;
+    height: 14px;
+    border-radius: 2px;
+    overflow: hidden;
+    display: flex;
+    border: 1px solid rgba(58,143,212,0.3);
+    position: relative;
+  }
+  .ctx-bar .used {
+    height: 100%;
+    transition: width 0.3s;
+  }
+  .ctx-bar .free {
+    flex: 1;
+    background: rgba(212,168,67,0.25);
+  }
+  .ctx-bar-label {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3px;
+    font-size: 8px;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+  }
+
+  /* Arrow between stages */
+  .arrow-down {
+    text-align: center;
+    padding: 2px 0;
+    font-size: 14px;
+    line-height: 1;
+  }
+  .arrow-down.green { color: var(--green-dim); }
+  .arrow-down.red { color: var(--red-dim); }
+
+  /* === OUTCOME PANELS === */
+  .outcomes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 2px solid var(--border-dim);
+  }
+  .outcome {
+    padding: 22px 20px;
+    text-align: center;
+  }
+  .outcome-a {
+    border-right: 1px solid var(--border-dim);
+    background: rgba(74,223,124,0.03);
+  }
+  .outcome-b {
+    border-left: 1px solid var(--border-dim);
+    background: rgba(224,64,64,0.03);
+  }
+
+  .outcome-icon {
+    font-size: 40px;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .outcome-title {
+    font-family: 'Russo One', sans-serif;
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .outcome-title.green { color: var(--green); text-shadow: 0 0 15px rgba(74,223,124,0.3); }
+  .outcome-title.red { color: var(--red-bright); text-shadow: 0 0 15px rgba(224,64,64,0.3); }
+
+  .outcome-stat {
+    font-size: 32px;
+    font-weight: bold;
+  }
+  .outcome-stat.green { color: var(--green-bright); }
+  .outcome-stat.red { color: var(--red-bright); }
+
+  .outcome-desc {
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  /* Status readout */
+  .status-line {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 4px 12px;
+    border-radius: 2px;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .status-line.ok {
+    border: 1px solid var(--green-dim);
+    color: var(--green);
+    background: rgba(74,223,124,0.06);
+  }
+  .status-line.fail {
+    border: 1px solid var(--red-dim);
+    color: var(--red-bright);
+    background: rgba(224,64,64,0.06);
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  /* === FOOTER === */
+  .footer {
+    border-top: 2px solid var(--border-dim);
+    padding: 18px 24px;
+    text-align: center;
+    background: linear-gradient(0deg, rgba(58,143,212,0.06) 0%, transparent 100%);
+  }
+  .footer-quote {
+    font-size: 13px;
+    color: var(--amber);
+    letter-spacing: 1px;
+    line-height: 1.6;
+  }
+  .footer-quote .bright { color: var(--amber-bright); font-weight: bold; }
+  .footer-meta {
+    margin-top: 10px;
+    font-size: 8px;
+    letter-spacing: 4px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 640px) {
+    .path-labels, .stages, .outcomes {
+      grid-template-columns: 1fr;
+    }
+    .path-label-a, .stages-col-a, .outcome-a {
+      border-right: none;
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .path-label-b, .stages-col-b, .outcome-b {
+      border-left: none;
+      border-top: 1px solid var(--border-dim);
+    }
+    body { padding: 12px 8px; }
+    .stage { padding: 14px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="poster">
+  <div class="rivet rivet-tl"></div>
+  <div class="rivet rivet-tr"></div>
+  <div class="rivet rivet-bl"></div>
+  <div class="rivet rivet-br"></div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-corp">AIST Protocol Research Division · Field Report 0.5</div>
+    <h1>Project Lifespan<br>Pathways</h1>
+    <div class="header-sub">A comparative study: <span class="g">Sustained Operations</span> vs <span class="r">Context Decay</span></div>
+    <div class="classified">For distribution to all AI operators</div>
+  </div>
+
+  <!-- PATH LABELS -->
+  <div class="path-labels">
+    <div class="path-label path-label-a">
+      Pathway A: Sustained
+      <span>With AIST handoff protocol</span>
+    </div>
+    <div class="path-label path-label-b">
+      Pathway B: Decay
+      <span>Standard recap method</span>
+    </div>
+  </div>
+
+  <!-- STAGES -->
+  <div class="stages">
+
+    <!-- LEFT: WITH AIST -->
+    <div class="stages-col stages-col-a">
+
+      <div class="stage">
+        <div class="stage-header">
+          <div class="stage-icon ok">&#9881;</div>
+          <div>
+            <div class="stage-title green">Initialization</div>
+            <div class="stage-session">Session 01</div>
+          </div>
+        </div>
+        <div class="stage-body">
+          New project. Full context available for work. Generate AIST handoff at session end.
+        </div>
+        <div class="ctx-bar">
+          <div class="free"></div>
+        </div>
+        <div class="ctx-bar-label">
+          <span>CONTEXT: 100% AVAILABLE</span>
+          <span>8,192 TOKENS</span>
+        </div>
+      </div>
+
+      <div class="arrow-down green">&#9661;</div>
+
+      <div class="stage">
+        <div class="stage-header">
+          <div class="stage-icon ok">&#9883;</div>
+          <div>
+            <div class="stage-title green">Active Operations</div>
+            <div class="stage-session">Session 02</div>
+          </div>
+        </div>
+        <div class="stage-body">
+          Load AIST handoff: 950 tokens. All decisions, context, and project state restored. 88% context free for new work.
+        </div>
+        <div class="ctx-bar">
+          <div class="used" style="width:12%;background:var(--green);opacity:0.6"></div>
+          <div class="free"></div>
+        </div>
+        <div class="ctx-bar-label">
+          <span>AIST: 950 TOKENS (12%)</span>
+          <span>7,242 FREE</span>
+        </div>
+      </div>
+
+      <div class="arrow-down green">&#9661;</div>
+
+      <div class="stage">
+        <div class="stage-header">
+          <div class="stage-icon ok">&#9883;</div>
+          <div>
+            <div class="stage-title green">Continued Operations</div>
+            <div class="stage-session">Session 05 · 10 · 20</div>
+          </div>
+        </div>
+        <div class="stage-body">
+          Handoff stays the same size. Always the latest state, always compressed. Cost doesn't grow with project complexity.
+        </div>
+        <div class="ctx-bar">
+          <div class="used" style="width:12%;background:var(--green);opacity:0.6"></div>
+          <div class="free"></div>
+        </div>
+        <div class="ctx-bar-label">
+          <span>AIST: STILL 950 TOKENS (12%)</span>
+          <span>7,242 FREE</span>
+        </div>
+      </div>
+
+      <div class="arrow-down green">&#9661;</div>
+
+      <div class="stage">
+        <div class="stage-header">
+          <div class="stage-icon ok">&#9734;</div>
+          <div>
+            <div class="stage-title green">Long-Term Stability</div>
+            <div class="stage-session">Session 50+</div>
+          </div>
+        </div>
+        <div class="stage-body">
+          Same protocol. Same cost. Switch models mid-project if you want. The handoff is plain text — any LLM reads it.
+        </div>
+        <div class="ctx-bar">
+          <div class="used" style="width:12%;background:var(--green);opacity:0.6"></div>
+          <div class="free"></div>
+        </div>
+        <div class="ctx-bar-label">
+          <span>AIST: ALWAYS 950 TOKENS</span>
+          <span>&#8734; SESSIONS</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: WITHOUT AIST -->
+    <div class="stages-col stages-col-b">
+
+      <div class="stage">
+        <div class="stage-header">
+          <div class="stage-icon ok">&#9881;</div>
+          <div>
+            <div class="stage-title amber">Initialization</div>
+            <div class="stage-session">Session 01</div>
+          </div>
+        </div>
+        <div class="stage-body">
+          New project. Full context available. Everything seems fine. No preservation system in place.
+        </div>
+        <div class="ctx-bar">
+          <div class="free"></div>
+        </div>
+        <div class="ctx-bar-label">
+          <span>CONTEXT: 100% AVAILABLE</span>
+          <span>8,192 TOKENS</span>
+        </div>
+      </div>
+
+      <div class="arrow-down red">&#9661;</div>
+
+      <div class="stage">
+        <div class="stage-header">
+          <div class="stage-icon warn">&#9888;</div>
+          <div>
+            <div class="stage-title amber">Context Pressure</div>
+            <div class="stage-session">Session 02</div>
+          </div>
+        </div>
+        <div class="stage-body">
+          Paste previous conversation recap. ~2,800 tokens consumed catching the model up. Work space already shrinking.
+        </div>
+        <div class="ctx-bar">
+          <div class="used" style="width:35%;background:var(--amber);opacity:0.6"></div>
+          <div class="free"></div>
+        </div>
+        <div class="ctx-bar-label">
+          <span>RECAP: ~2,800 TOKENS (35%)</span>
+          <span>5,392 FREE</span>
+        </div>
+      </div>
+
+      <div class="arrow-down red">&#9661;</div>
+
+      <div class="stage">
+        <div class="stage-header">
+          <div class="stage-icon bad">&#9762;</div>
+          <div>
+            <div class="stage-title red">Context Starvation</div>
+            <div class="stage-session">Session 03 &ndash; 04</div>
+          </div>
+        </div>
+        <div class="stage-body">
+          Recap now includes sessions 1&ndash;3. Growing every time. Model starts forgetting details, losing nuance, hallucinating past decisions.
+        </div>
+        <div class="ctx-bar">
+          <div class="used" style="width:70%;background:var(--red);opacity:0.5"></div>
+          <div class="free"></div>
+        </div>
+        <div class="ctx-bar-label">
+          <span>RECAP: ~5,700 TOKENS (70%)</span>
+          <span>2,492 FREE</span>
+        </div>
+      </div>
+
+      <div class="arrow-down red">&#9661;</div>
+
+      <div class="stage">
+        <div class="stage-header">
+          <div class="stage-icon dead">&#9760;</div>
+          <div>
+            <div class="stage-title red">Terminal Failure</div>
+            <div class="stage-session">Session 05</div>
+          </div>
+        </div>
+        <div class="stage-body">
+          Recap exceeds available context. Model can't hold the project state and do useful work simultaneously. Project abandoned.
+        </div>
+        <div class="ctx-bar">
+          <div class="used" style="width:100%;background:var(--red);opacity:0.4"></div>
+        </div>
+        <div class="ctx-bar-label">
+          <span>RECAP: 100% &mdash; NO WORK SPACE</span>
+          <span>0 FREE</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- OUTCOMES -->
+  <div class="outcomes">
+    <div class="outcome outcome-a">
+      <div class="outcome-icon">&#9734;</div>
+      <div class="outcome-title green">Operational</div>
+      <div class="outcome-stat green">&infin;</div>
+      <div class="outcome-desc">Sessions possible · constant cost · any LLM</div>
+      <div class="status-line ok">&#9679; Status: Nominal</div>
+    </div>
+    <div class="outcome outcome-b">
+      <div class="outcome-icon">&#9760;</div>
+      <div class="outcome-title red">Terminated</div>
+      <div class="outcome-stat red">~3&ndash;5</div>
+      <div class="outcome-desc">Sessions until context death on 8K model</div>
+      <div class="status-line fail">&#9679; Status: System failure</div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-quote">
+      Recaps <span class="bright">grow</span>. Handoffs <span class="bright">don't</span>.<br>
+      That's the difference between a project that dies and one that lives.
+    </div>
+    <div class="footer-meta">
+      AIST Protocol v0.5 · Open Source · CC BY-SA 4.0 · Plain text · Any LLM · No vendor lock-in
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

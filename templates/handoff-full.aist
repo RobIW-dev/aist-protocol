@@ -1,0 +1,89 @@
+@AIST/5.0
+
+# ═══════════════════════════════════════════════════════════════
+# HIGH fidelity — everything except MAX-only sections (~500 tokens)
+# Use when: new collaborator, cross-tool, substantial session
+# Lost: CALIBRATION pairs (refs to skill only), ENERGY, CONSTRAINTS
+# ═══════════════════════════════════════════════════════════════
+
+§HEADER
+project: PROJECT_NAME
+session: SESSION_TIMESTAMP
+lineage: parent:PARENT_ID
+context: SOURCE→DESTINATION
+version: VERSION
+
+§ESSENCE
+ONE_BREATH_SUMMARY_50_TOKENS_MAX
+
+§MEMORY
++user: key-facts-about-user
++project.state: current-state
++discovery: key-insights
+!blocker: current-blockers
+!rejected: things-not-to-suggest
+-deprecated: outdated-facts
+
+§DECISIONS
+[D1] DATE "decision-slug"
+     why: rationale
+     rejected: option(reason)
+     liked: what-was-good
+     revisit-when: conditions
+
+[D2] DATE "decision-slug"
+     why: rationale
+     evaporated: constraint → solution
+
+§THREADS
+[T1] thread-name status:STATE effort:ESTIMATE
+     next: next-action
+
+[T2] thread-name status:STATE
+     blocked: T1
+     next: next-action
+
+§WORKING-STYLE
+feedback: how-user-gives-feedback
+iteration: how-fast-to-cycle
+tolerance: what-they-accept-vs-reject
+language: native-or-not
+
+§IMPLEMENTATION
+[I1] title:"fix-description"
+     problem: what-was-broken
+     solution: how-fixed
+     files: affected-files
+
+§IDEAS
+[ID1] "idea-name" synced:no
+     Description of the idea
+
+[ID2] "idea-name" synced:pending similar:idea-archive#NNN
+     Description — merge or separate?
+
+§ARTIFACTS
+[A1] type:TYPE name:"ARTIFACT_NAME"
+     semantic: one-line-meaning
+     file: path/to/file
+     essential: true
+
+§SIGNIFICANCE
+[B1] type:breakthrough
+     title: "title"
+     insight: what-was-learned
+     impact: HIGH
+
+# NOTE: At HIGH fidelity, CALIBRATION/HEURISTICS are referenced
+# by skill name rather than included inline:
+# calibration-ref: robiw-voice skill has anti-patterns from this session
+# heuristics-ref: robiw-voice skill has self-check rules
+
+§HANDOFF
+to: target-context
+focus: primary-task
+skip: what-not-to-revisit (reason)
+warn: things-to-avoid (reason)
+first-task: T1
+artifact-priority: A1
+regression-guard: SCOPE_OR_QUALITY_GUARD

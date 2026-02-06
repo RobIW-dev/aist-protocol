@@ -1,0 +1,116 @@
+@AIST/5.0
+
+§HEADER
+project: robiw-x-launch
+session: 2026-02-06T02:00:00Z
+context: claude.ai
+version: 1
+
+§ESSENCE
+@RobIW X account launch. Voice DNA skill calibrated through 3 rounds.
+20 tweets ready. Profile complete. Username change pending.
+
+§MEMORY
++account: professional creator, software developer, @igestedt15562 (pending @RobIW)
++profile: bio set, >_R avatar, scanner header, expanded bio
++skill: robiw-voice v2 installed — 3 anti-patterns added this session
++tweets: batch v3 in outputs, 20 tweets, 7-day schedule
++warm-up: 24-48h restriction, browsing/following, no forced tweets
+!pending: username change to @RobIW (rate limited, retry in 1-2h)
+!pending: first tweet is #20 (transparency) when restrictions lift
+
+§DECISIONS
+[D1] 2026-02-06 "Professional account as Creator not Business"
+     why: Individual maker positioning, not company
+     rejected: Business (implies team/company)
+
+[D2] 2026-02-06 "Scanner error as launch header"
+     why: Authentic builder energy, conversation starter
+     rejected: Exocortex screenshot (save for later when established)
+     revisit-when: After first week of posting
+
+[D3] 2026-02-06 "Lead with transparency tweet"
+     why: Sets account identity from day one — AI-honest practitioner
+
+§CALIBRATION
+target: robiw-voice-dna
+
+[C1] "staged-to-natural"
+     before: "Tested GitHub Copilot on a production stored procedure..."
+     after: "ChatGPT rewrote a query and made it significantly slower. Missed the obvious index."
+     why: Real practitioners notice things while working. They don't sit down to test tools for tweets.
+
+[C2] "remove-dramatic-closers"
+     before: "...In production that string is half the codebase."
+     after: "...The string just passes through untouched."
+     why: If the observation is done, stop. No stump lines for effect.
+
+[C3] "remove-sweeping-claims"
+     before: "Every AI SQL tool stumbles on them."
+     after: "No tooling validates them across GO batches."
+     why: "Every tool" is easy to pick apart. Name what happened specifically.
+
+[C4] "non-native-phrasing"
+     before: "Completely different skill."
+     after: "Entirely different job."
+     why: Shorter, more direct. How a Swedish engineer writes in English.
+
+§HEURISTICS
+scope: robiw-voice
+
+[H1] if: Tweet describes testing/evaluating a tool
+     then: Rewrite as something noticed while working
+     test: "Would someone tweet this in the moment?"
+
+[H2] if: Tweet ends with dramatic one-liner designed to land
+     then: Cut it. End where the observation ends.
+     test: "Remove last sentence. Is the tweet worse?"
+
+[H3] if: "Every tool" / "all X" / "no Y does Z"
+     then: Name the specific tool and what happened
+     test: "Could someone reply with a counterexample?"
+
+[H4] if: Phrasing sounds too literary
+     then: Shorter sentence. More direct.
+     test: "Would I type this in Slack?"
+
+§WORKING-STYLE
+feedback: concise, points to specific words, gives their real version
+iteration: fast — fix and show, don't ask permission
+tolerance: low for filler/drama, high for imperfection
+language: English 2nd/3rd — affects what "natural" means
+
+§THREADS
+[T1] username-change status:blocked
+     next: Retry @RobIW after rate limit clears (1-2h)
+
+[T2] account-warmup status:in-progress
+     next: Browse, follow 15-20, like posts for 24-48h
+
+[T3] first-tweet status:ready
+     next: Post Tweet 20 (transparency) when restrictions lift
+
+§ARTIFACTS
+[A1] type:skill name:"robiw-voice v2"
+     semantic: X persona with 3 anti-patterns from calibration rounds
+     file: /mnt/skills/user/robiw-voice/
+
+[A2] type:content name:"Tweet Batch v3"
+     semantic: 20 tweets, voice-calibrated, 7-day schedule
+     file: robiw-tweet-batch-1-v3.md
+
+§TRANSFER-BUDGET
+total-captured: ~650 tokens
+context-cost-at-max: ~0.3% of 200K window
+
+| Fidelity | Tokens | What's lost                                           |
+|----------|--------|-------------------------------------------------------|
+| MAX      | ~650   | Nothing                                               |
+| HIGH     | ~500   | WORKING-STYLE, ARTIFACTS                              |
+| MEDIUM   | ~350   | + CALIBRATION pairs (refs to skill only)              |
+|          |        | + HEURISTICS (refs to skill only)                     |
+| LOW      | ~200   | + DECISIONS, THREADS                                  |
+| MIN      | ~100   | Everything except ESSENCE + MEMORY + HANDOFF          |
+
+recommendation: MAX — 0.3% context cost. The calibration pairs took 3 rounds
+of real refinement and are the most valuable content to preserve.

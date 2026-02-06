@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIST Protocol — Project Lifespan</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #f5f0e8;
+    --ink: #1a1a1a;
+    --rust: #c0392b;
+    --rust-light: #e74c3c;
+    --teal: #0e8a7d;
+    --teal-light: #16a085;
+    --gold: #d4a843;
+    --paper: #ede6d6;
+    --muted: #8a7e6b;
+  }
+
+  body {
+    font-family: 'DM Mono', monospace;
+    background: var(--cream);
+    color: var(--ink);
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(212, 168, 67, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 50%, rgba(14, 138, 125, 0.06) 0%, transparent 50%);
+  }
+
+  .poster {
+    max-width: 900px;
+    width: 100%;
+    position: relative;
+  }
+
+  /* Aged paper texture overlay */
+  .poster::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    opacity: 0.5;
+    z-index: 10;
+  }
+
+  /* === TOP BANNER === */
+  .banner {
+    text-align: center;
+    padding: 30px 20px 22px;
+    border: 4px solid var(--ink);
+    border-bottom: none;
+    position: relative;
+  }
+  .banner::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 20px;
+    right: 20px;
+    height: 2px;
+    background: var(--ink);
+  }
+  .banner-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .banner h1 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(28px, 5vw, 48px);
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  .banner h1 .em { color: var(--rust); }
+  .banner-foot {
+    margin-top: 14px;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* === COMPARISON GRID === */
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 4px solid var(--ink);
+    border-top: none;
+  }
+
+  .side {
+    padding: 28px 24px 32px;
+    position: relative;
+  }
+  .side-left {
+    border-right: 2px solid var(--ink);
+    background: linear-gradient(180deg, rgba(192,57,43,0.04) 0%, rgba(192,57,43,0.01) 100%);
+  }
+  .side-right {
+    border-left: 2px solid var(--ink);
+    background: linear-gradient(180deg, rgba(14,138,125,0.04) 0%, rgba(14,138,125,0.01) 100%);
+  }
+
+  .side-label {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 10px;
+    margin: -28px -24px 24px;
+  }
+  .side-left .side-label {
+    background: var(--rust);
+    color: var(--cream);
+  }
+  .side-right .side-label {
+    background: var(--teal);
+    color: var(--cream);
+  }
+
+  /* Session bars */
+  .sessions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .session {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 36px;
+  }
+  .session-num {
+    font-size: 10px;
+    font-weight: 500;
+    width: 56px;
+    flex-shrink: 0;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .session-bar {
+    flex: 1;
+    height: 28px;
+    border-radius: 3px;
+    position: relative;
+    overflow: hidden;
+    border: 1.5px solid rgba(0,0,0,0.1);
+  }
+
+  /* Without AIST bars */
+  .bar-recap {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background: var(--rust);
+    opacity: 0.8;
+    transition: width 0.3s;
+  }
+  .bar-recap::after {
+    content: 'RECAP';
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 7px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.8);
+  }
+  .bar-work-without {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgba(212,168,67,0.3);
+  }
+
+  /* With AIST bars */
+  .bar-aist {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background: var(--teal);
+    opacity: 0.85;
+  }
+  .bar-aist::after {
+    content: 'AIST';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 7px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.9);
+  }
+  .bar-work-with {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgba(212,168,67,0.4);
+  }
+
+  .session-note {
+    font-size: 9px;
+    color: var(--muted);
+    width: 50px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+  .session-note.dead {
+    color: var(--rust);
+    font-weight: 500;
+  }
+  .session-note.alive {
+    color: var(--teal);
+    font-weight: 500;
+  }
+
+  /* Death marker */
+  .death-row {
+    margin-top: 10px;
+    padding: 12px;
+    text-align: center;
+    border: 2px dashed var(--rust);
+    border-radius: 4px;
+    background: rgba(192,57,43,0.04);
+  }
+  .death-row .skull {
+    font-size: 28px;
+    line-height: 1;
+  }
+  .death-row p {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-top: 6px;
+    font-weight: 500;
+  }
+
+  /* Infinite marker */
+  .infinite-row {
+    margin-top: 10px;
+    padding: 12px;
+    text-align: center;
+    border: 2px solid var(--teal);
+    border-radius: 4px;
+    background: rgba(14,138,125,0.04);
+  }
+  .infinite-row .inf {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 900;
+    color: var(--teal);
+    line-height: 1;
+  }
+  .infinite-row p {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  /* === BOTTOM STRIP === */
+  .bottom-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border: 4px solid var(--ink);
+    border-top: none;
+  }
+  .stat-box {
+    padding: 20px 16px;
+    text-align: center;
+    border-right: 2px solid var(--ink);
+  }
+  .stat-box:last-child { border-right: none; }
+  .stat-box .num {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(24px, 4vw, 36px);
+    line-height: 1;
+    color: var(--teal);
+  }
+  .stat-box .num.rust { color: var(--rust); }
+  .stat-box .desc {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+
+  /* === FOOTER MESSAGE === */
+  .footer-msg {
+    border: 4px solid var(--ink);
+    border-top: none;
+    padding: 22px 28px;
+    text-align: center;
+  }
+  .footer-msg p {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(14px, 2.5vw, 20px);
+    font-weight: 700;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .footer-msg p .teal { color: var(--teal); }
+  .footer-msg .sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 12px;
+  }
+
+  /* === CONTEXT BADGE === */
+  .context-badge {
+    text-align: center;
+    padding: 10px;
+    border: 4px solid var(--ink);
+    border-top: none;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--paper);
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 640px) {
+    .comparison {
+      grid-template-columns: 1fr;
+    }
+    .side-left {
+      border-right: none;
+      border-bottom: 2px solid var(--ink);
+    }
+    .side-right {
+      border-left: none;
+      border-top: 2px solid var(--ink);
+    }
+    .bottom-strip {
+      grid-template-columns: 1fr;
+    }
+    .stat-box {
+      border-right: none;
+      border-bottom: 2px solid var(--ink);
+    }
+    .stat-box:last-child { border-bottom: none; }
+    body { padding: 16px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="poster">
+
+  <!-- TOP BANNER -->
+  <div class="banner">
+    <div class="banner-sub">A Public Service Announcement for AI Users</div>
+    <h1>Your Project Has a<br><span class="em">Lifespan Problem</span></h1>
+    <div class="banner-foot">Context windows are finite · Recaps grow · Work dies</div>
+  </div>
+
+  <!-- COMPARISON -->
+  <div class="comparison">
+
+    <!-- LEFT: WITHOUT AIST -->
+    <div class="side side-left">
+      <div class="side-label">Without AIST</div>
+
+      <div class="sessions">
+        <div class="session">
+          <div class="session-num">Session 1</div>
+          <div class="session-bar" style="background:rgba(212,168,67,0.3)">
+          </div>
+          <div class="session-note">100%</div>
+        </div>
+        <div class="session">
+          <div class="session-num">Session 2</div>
+          <div class="session-bar">
+            <div class="bar-recap" style="width:35%"></div>
+            <div class="bar-work-without" style="left:35%"></div>
+          </div>
+          <div class="session-note">65%</div>
+        </div>
+        <div class="session">
+          <div class="session-num">Session 3</div>
+          <div class="session-bar">
+            <div class="bar-recap" style="width:58%"></div>
+            <div class="bar-work-without" style="left:58%"></div>
+          </div>
+          <div class="session-note">42%</div>
+        </div>
+        <div class="session">
+          <div class="session-num">Session 4</div>
+          <div class="session-bar">
+            <div class="bar-recap" style="width:78%"></div>
+            <div class="bar-work-without" style="left:78%"></div>
+          </div>
+          <div class="session-note dead">22%</div>
+        </div>
+        <div class="session">
+          <div class="session-num">Session 5</div>
+          <div class="session-bar" style="background:rgba(192,57,43,0.15)">
+            <div class="bar-recap" style="width:100%; opacity:0.4"></div>
+          </div>
+          <div class="session-note dead">DEAD</div>
+        </div>
+      </div>
+
+      <div class="death-row">
+        <div class="skull">&#9760;</div>
+        <p>Project abandoned · Context exhausted</p>
+      </div>
+    </div>
+
+    <!-- RIGHT: WITH AIST -->
+    <div class="side side-right">
+      <div class="side-label">With AIST</div>
+
+      <div class="sessions">
+        <div class="session">
+          <div class="session-num">Session 1</div>
+          <div class="session-bar" style="background:rgba(212,168,67,0.3)">
+          </div>
+          <div class="session-note alive">100%</div>
+        </div>
+        <div class="session">
+          <div class="session-num">Session 2</div>
+          <div class="session-bar">
+            <div class="bar-aist" style="width:12%"></div>
+            <div class="bar-work-with" style="left:12%"></div>
+          </div>
+          <div class="session-note alive">88%</div>
+        </div>
+        <div class="session">
+          <div class="session-num">Session 5</div>
+          <div class="session-bar">
+            <div class="bar-aist" style="width:12%"></div>
+            <div class="bar-work-with" style="left:12%"></div>
+          </div>
+          <div class="session-note alive">88%</div>
+        </div>
+        <div class="session">
+          <div class="session-num">Session 10</div>
+          <div class="session-bar">
+            <div class="bar-aist" style="width:12%"></div>
+            <div class="bar-work-with" style="left:12%"></div>
+          </div>
+          <div class="session-note alive">88%</div>
+        </div>
+        <div class="session">
+          <div class="session-num">Session 50</div>
+          <div class="session-bar">
+            <div class="bar-aist" style="width:12%"></div>
+            <div class="bar-work-with" style="left:12%"></div>
+          </div>
+          <div class="session-note alive">88%</div>
+        </div>
+      </div>
+
+      <div class="infinite-row">
+        <div class="inf">&infin;</div>
+        <p>Same cost every session · Project lives forever</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- STATS STRIP -->
+  <div class="bottom-strip">
+    <div class="stat-box">
+      <div class="num rust">~3</div>
+      <div class="desc">Sessions until death<br>without AIST (8K model)</div>
+    </div>
+    <div class="stat-box">
+      <div class="num">&infin;</div>
+      <div class="desc">Sessions with AIST<br>Same 950 tokens every time</div>
+    </div>
+    <div class="stat-box">
+      <div class="num">Any</div>
+      <div class="desc">LLM · One plain-text handoff<br>works on every model</div>
+    </div>
+  </div>
+
+  <!-- BOTTOM MESSAGE -->
+  <div class="footer-msg">
+    <p>Recaps grow. Handoffs <span class="teal">don't.</span><br>
+    That's the difference between a project that dies<br>and a project that <span class="teal">lives.</span></p>
+    <div class="sub">AIST Protocol v0.5 · Open Source · CC BY-SA 4.0 · Any LLM</div>
+  </div>
+
+  <!-- CONTEXT -->
+  <div class="context-badge">
+    Based on 8K context window (ChatGPT Free / Ollama default) · Recap assumes typical conversational catch-up · AIST at FULL notation, MAX fidelity
+  </div>
+
+</div>
+
+</body>
+</html>

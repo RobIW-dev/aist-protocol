@@ -1,0 +1,145 @@
+@AIST/5.0
+
+# ═══════════════════════════════════════════════════════════════
+# MERGE template — unifying parallel streams
+# Always MAX fidelity (merges are expensive to redo)
+# Includes STREAM, FOUNDATION, EVOLUTION + all v0.5 sections
+# ═══════════════════════════════════════════════════════════════
+
+§HEADER
+project: PROJECT_NAME
+session: SESSION_TIMESTAMP
+lineage: merges:STREAM_ID_1,STREAM_ID_2
+context: merge-session
+version: VERSION
+
+§STREAM
+id: MERGED_STATE_ID
+type: merge-result
+merges:
+  - id: STREAM_ID_1
+    name: stream-name
+    focus: what-that-stream-did
+  - id: STREAM_ID_2
+    name: stream-name
+    focus: what-that-stream-did
+
+§FOUNDATION
+codebase-state: shared-starting-point
+known-constraints: list-of-hard-constraints
+
+§ESSENCE
+PROJECT_DESCRIPTION
+***MERGED*** from N parallel streams: STREAM_NAMES.
+
+§MEMORY
++from-stream1: what-it-contributed
++from-stream2: what-it-contributed
++merged.state: unified-current-state
+!merge-note: important-merge-observations
+
+§DECISIONS
+# Preserved from all streams — note provenance
+[D1] DATE "decision-slug" (from STREAM_NAME)
+     why: rationale
+     rejected: option(reason)
+     liked: what-was-good
+     revisit-when: conditions
+
+[D2] DATE "decision-slug" (from STREAM_NAME)
+     why: rationale
+     evaporated: constraint → solution
+
+§EVOLUTION
+type: subsumption|expansion|pivot|contraction
+from: previous-scope
+to: new-scope
+trigger: what-caused-change
+active-scope: which-is-current
+regression-guard: instruction-to-prevent-decay
+subsumes: what-old-scope-contributed
+
+§THREADS
+# Merged with dependency recalculation
+[T1] thread-name status:STATE effort:ESTIMATE
+     next: next-action
+     provenance: STREAM_NAME
+
+§IMPLEMENTATION
+# Union from all streams — append-only
+[I1] title:"fix-description" (from STREAM_NAME)
+     problem: what-was-broken
+     solution: how-fixed
+     files: affected-files
+
+§CALIBRATION
+# Merge calibration pairs from creative streams if any
+target: what-was-calibrated
+
+[C1] "slug" (from STREAM_NAME)
+     before: what-was-wrong
+     after: what-replaced-it
+     why: transferable-principle
+
+§HEURISTICS
+# Union from all streams — deduplicated
+scope: domain
+
+[H1] "slug" (from STREAM_NAME)
+     if: trigger-condition
+     then: what-to-do-instead
+     test: self-check-question
+     confidence: single-session|multi-session|validated
+
+§WORKING-STYLE
+feedback: how-user-gives-feedback
+iteration: how-fast-to-cycle
+tolerance: what-they-accept-vs-reject
+
+§IDEAS
+# Union from all streams — deduplicated, sync status updated
+[ID1] "idea-name" synced:no (from STREAM_NAME)
+     Description
+
+§ARTIFACTS
+[A1] type:TYPE name:"ARTIFACT_NAME" (from STREAM_NAME)
+     semantic: one-line-meaning
+     file: path/to/file
+
+§SIGNIFICANCE
+[B1] type:breakthrough (from STREAM_NAME)
+     title: "title"
+     insight: what-was-learned
+     impact: HIGH
+
+# Merge-specific insight
+[B2] type:discovery
+     title: "merge-insight"
+     insight: what-became-clear-only-when-merging
+
+§ENERGY
+mode: post-merge-mode
+focus: unified-focus
+momentum: high|medium|low
+
+§HANDOFF
+to: next-session
+focus: priority-after-merge
+scope-precedence: ACTIVE_SCOPE
+regression-guard: SCOPE_OR_QUALITY_GUARD
+merge-provenance: |
+  Merged N streams. Conflicts: NONE|DESCRIPTION.
+  Resolution: HOW_RESOLVED.
+
+§TRANSFER-BUDGET
+total-captured: ~NNN tokens (N sections populated)
+context-cost-at-max: ~N% of new session
+
+| Fidelity | Tokens | What's lost                              |
+|----------|--------|------------------------------------------|
+| MAX      | ~NNN   | Nothing                                  |
+| HIGH     | ~NNN   | ENERGY, compact MEMORY/CALIBRATION       |
+| LOW      | ~NNN   | + IMPLEMENTATION, IDEAS, ARTIFACTS, etc  |
+| MIN      | ~NNN   | Everything except ESSENCE+MEMORY+HANDOFF |
+
+recommendation: MAX — merges are expensive to redo. Preserve everything.

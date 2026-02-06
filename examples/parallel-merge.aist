@@ -1,0 +1,116 @@
+@AIST/4.0
+
+§HEADER
+project: exocortex
+session: 2026-02-01T23:30:00Z
+lineage: merges:603cc149,2b6bff67
+context: claude.ai-merge
+version: v1-premium
+
+§STREAM
+id: stress-test-merge-2026-02-01
+type: merge-result
+merges:
+  - id: 603cc149
+    name: mvp-polish-and-agents
+    focus: UI polish, notes blocks shipped, agent layer design
+  - id: 2b6bff67
+    name: visual-blocks-architecture
+    focus: Excalidraw decision, visual blocks design, export-to-ai
+
+§FOUNDATION
+codebase-state: Tauri 2.0 + React 18 + TipTap 2.x + Zustand + SQLite
+ui-framework: FloatingPane, Sidebar (4-edge dock), minimized pills
+existing-panels: Ideas (complete), Notes (basic), Settings
+known-constraints: Local-first, desktop-only, zero-cost AI (webview)
+
+§ESSENCE
+Exocortex: Cognitive Augmentation Layer — premium personal knowledge OS. 
+Notes → Agent → Review loop. Tauri+React+TipTap+Excalidraw. PREMIUM scope.
+
+§MEMORY
++stack: Tauri 2.0, React 18, TipTap 2.x, Excalidraw, Chart.js, MarkMap
++built.blocks: MermaidBlock, CalloutBlock, ToggleBlock, SketchBlock — shipped
++designed: ExcalidrawBlock (3h), Notes Agent (4h), Agent Layer (12h)
+!critical-license: tldraw NOT MIT — requires payment for commercial
+!sketchblock-vs-excalidraw: SketchBlock (simple) ≠ ExcalidrawBlock (whiteboard)
+
+§DECISIONS
+[D1] 2026-02-01 "excalidraw-over-tldraw"
+     why: MIT license allows full OSS including commercial
+     rejected: tldraw (custom license, paid for commercial)
+     liked: Better SDK, cleaner API, "Make Real" AI feature
+     revisit-when: tldraw license changes OR non-commercial fork
+     importance: HIGH
+
+[D2] 2026-02-01 "visual-blocks-as-tiptap-extensions"
+     why: Seamless integration, single document model
+     rejected: separate-canvas-mode (context switching)
+     liked: Canvas mode offers infinite space
+     revisit-when: Need true infinite canvas for complex diagrams
+
+§EVOLUTION
+type: subsumption
+from: MVP (good enough for personal use)
+to: PREMIUM (market-competitive, rivals paid tools)
+trigger: Constraint evaporation — visual quality was effort-based, not technical
+active-scope: PREMIUM
+regression-guard: Foundation supports premium — do NOT propose MVP compromises
+
+§THREADS
+[T1] excalidraw-block status:ready effort:3h
+     next: Implement TipTap extension
+     file: artifacts/excalidraw-block.md
+     
+[T2] notes-agent status:ready effort:4-6h
+     next: Watch edits → detect actionable content
+     parallel: Can build alongside T1
+
+§IMPLEMENTATION
+[I1] title:"FloatingPane minimize race"
+     problem: Multiple clicks needed for window controls
+     solution: Debounce + state race fix
+     files: FloatingPane.tsx
+
+[I2] title:"Mermaid bundle size"
+     problem: 1.4MB blocking main thread
+     solution: Lazy loading via dynamic import
+     files: MermaidBlock.tsx, vite.config.ts
+
+§IDEAS
+[ID1] "Block templates library" synced:no
+     Pre-built diagram starters (user journey, architecture)
+     
+[ID2] "AI block generation" synced:pending similar:idea-archive#142
+     Type description → Claude generates Mermaid inline
+     
+[ID3] "Export to multiple AI targets" synced:no
+     Why just Claude? DALL-E + Midjourney too
+     constraint-evaporation: true
+
+§ARTIFACTS
+[A1] type:code name:"ExcalidrawBlock Implementation"
+     semantic: TipTap-extension-edit-view-modes-resize-persistence
+     file: artifacts/excalidraw-block.md
+     essential: true
+
+§SIGNIFICANCE
+[B1] type:breakthrough title:"Excalidraw license clarity"
+     insight: tldraw requires commercial payment. Excalidraw is MIT.
+     impact: HIGH — decides visual blocks strategy
+
+[B2] type:pivot title:"MVP → Premium"
+     insight: Scope expanded from personal tool to market competitor
+     trigger: Constraint evaporation
+     impact: HIGH
+
+§ENERGY
+mode: building
+focus: visual-blocks-then-agent-layer
+momentum: high
+
+§HANDOFF
+to: next-session
+focus: T1 (ExcalidrawBlock) + T2 (Notes Agent) in parallel
+regression-guard: scope-precedence:PREMIUM
+load-artifacts: A1 immediately

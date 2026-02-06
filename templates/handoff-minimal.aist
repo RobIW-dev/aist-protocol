@@ -1,0 +1,26 @@
+@AIST/5.0
+
+# ═══════════════════════════════════════════════════════════════
+# MIN fidelity — enough to resume, not to rebuild (~100 tokens)
+# Use when: quick resume, same person, context is fresh
+# Lost: decisions, calibration, heuristics, ideas, implementations
+# ═══════════════════════════════════════════════════════════════
+
+§HEADER
+project: PROJECT_NAME
+session: SESSION_TIMESTAMP
+version: VERSION
+
+§ESSENCE
+ONE_BREATH_SUMMARY_50_TOKENS_MAX
+
+§MEMORY
++project.state: current-state
++key: critical-fact
+!blocker: if-any
+!pending: what-needs-attention
+
+§HANDOFF
+to: target-context
+focus: primary-task
+warn: things-to-avoid

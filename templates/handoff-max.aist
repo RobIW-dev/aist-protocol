@@ -1,0 +1,138 @@
+@AIST/5.0
+
+# ═══════════════════════════════════════════════════════════════
+# AIST v0.5 — MAX fidelity template (all sections)
+# Fidelity annotations: [MIN] [LOW] [MED] [HIGH] [MAX]
+# show which level first includes that section.
+# At transfer time, include everything down to chosen fidelity.
+# ═══════════════════════════════════════════════════════════════
+
+§HEADER                                                    # [MIN]
+project: PROJECT_NAME
+session: SESSION_TIMESTAMP
+lineage: parent:PARENT_ID
+context: SOURCE→DESTINATION
+version: VERSION
+
+§ESSENCE                                                   # [MIN]
+ONE_BREATH_SUMMARY_50_TOKENS_MAX
+
+§MEMORY                                                    # [MIN]
++user: key-facts-about-user
++project.state: current-state
++discovery: key-insights
+!blocker: current-blockers
+!rejected: things-not-to-suggest
+-deprecated: outdated-facts
+
+§HANDOFF                                                   # [MIN]
+to: target-context
+focus: primary-task
+skip: what-not-to-revisit (reason)
+warn: things-to-avoid (reason)
+first-task: T1
+regression-guard: SCOPE_OR_QUALITY_GUARD
+
+§DECISIONS                                                 # [LOW]
+[D1] DATE "decision-slug"
+     why: rationale
+     rejected: option(reason), option(reason)
+     liked: what-was-good-about-rejected
+     revisit-when: conditions-to-reconsider
+
+[D2] DATE "decision-slug"
+     why: rationale
+     evaporated: constraint → solution
+
+§THREADS                                                   # [LOW]
+[T1] thread-name status:STATE effort:ESTIMATE
+     next: next-action
+
+[T2] thread-name status:STATE effort:ESTIMATE
+     blocked: T1
+     next: next-action
+
+§WORKING-STYLE                                             # [HIGH]
+feedback: how-user-gives-feedback
+iteration: how-fast-to-cycle
+tolerance: what-they-accept-vs-reject
+language: native-or-not-affects-output
+
+§IMPLEMENTATION                                            # [HIGH]
+[I1] title:"fix-description"
+     problem: what-was-broken
+     solution: how-fixed
+     files: affected-files
+
+§IDEAS                                                     # [HIGH]
+[ID1] "idea-name" synced:no
+     Description of the idea
+     constraint-evaporation: true|false
+
+[ID2] "idea-name" synced:pending similar:idea-archive#NNN
+     Description — merge or separate?
+
+§CALIBRATION                                               # [MAX]
+target: what-was-calibrated
+
+[C1] "slug"
+     before: what-was-wrong (short phrase)
+     after: what-replaced-it (short phrase)
+     why: transferable-principle
+
+§HEURISTICS                                                # [MAX]
+scope: domain-these-apply-to
+
+[H1] "slug"
+     if: trigger-condition
+     then: what-to-do-instead
+     test: one-sentence-self-check-question
+     confidence: single-session|multi-session|validated
+
+§ARTIFACTS                                                 # [MAX]
+[A1] type:TYPE name:"ARTIFACT_NAME"
+     semantic: one-line-meaning
+     file: path/to/file
+     essential: true|false
+
+§SIGNIFICANCE                                              # [MAX]
+[B1] type:breakthrough|pivot|dead-end|discovery
+     title: "title"
+     insight: what-was-learned
+     impact: HIGH|MEDIUM|LOW
+
+§EVOLUTION                                                 # [MAX]
+type: subsumption|expansion|pivot|contraction
+from: previous-scope
+to: new-scope
+trigger: what-caused-change
+active-scope: which-is-current
+regression-guard: instruction-to-prevent-decay
+
+§CONSTRAINTS                                               # [MAX]
+HARD:
+  - constraint (reason)
+EVAPORATED:
+  - assumed-constraint → how-dissolved
+QUESTIONING:
+  - possible-constraint → exploring
+
+§ENERGY                                                    # [MAX]
+mode: exploring|executing|debugging|shipping
+focus: current-focus
+momentum: high|medium|low
+
+§TRANSFER-BUDGET                                           # [ALWAYS]
+total-captured: ~NNN tokens (N sections populated)
+context-cost-at-max: ~N% of new session
+
+| Fidelity | Tokens | What's lost                              |
+|----------|--------|------------------------------------------|
+| MAX      | ~NNN   | Nothing                                  |
+| HIGH     | ~NNN   | ENERGY, CONSTRAINTS, EVOLUTION, compact  |
+| MEDIUM   | ~NNN   | + CALIBRATION/HEURISTICS (skill refs)    |
+| LOW      | ~NNN   | + IMPLEMENTATION, IDEAS, ARTIFACTS, etc  |
+| MIN      | ~NNN   | Everything except ESSENCE+MEMORY+HANDOFF |
+| CUSTOM   | varies | User specifies                           |
+
+recommendation: LEVEL — CONCRETE_REASON_WITH_WHAT_WOULD_BE_LOST

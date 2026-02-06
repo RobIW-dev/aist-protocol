@@ -1,0 +1,252 @@
+@AIST/5.0
+
+§HEADER
+project: aist-protocol
+session: 2026-02-06T11:49:00Z
+lineage: continues:aist-v05-creative-transfer
+context: claude.ai
+version: 0.5
+
+§ESSENCE
+AIST protocol redesigned from v0.4 to v0.5. New philosophy: capture
+everything, compress at transfer. Three new sections (CALIBRATION,
+HEURISTICS, WORKING-STYLE) + Transfer Budget system. All skill files
+updated, all templates migrated from v3/v4 to v0.5 fidelity-based format.
+
+§MEMORY
++aist.state: v0.5 complete — SKILL.md, sections.md, examples.md, all 5 templates updated
++philosophy: "capture everything, compress at transfer, never silently drop"
++new-sections: CALIBRATION (before/after pairs), HEURISTICS (if/then/test), WORKING-STYLE (workflow mechanics)
++new-concept: Transfer Budget — explicit cost/loss table at handoff time
++templates: handoff-max (master w/ fidelity annotations), minimal (MIN), standard (LOW), full (HIGH), merge (always MAX)
++old-templates: v3 minimal/standard/full replaced, v4 merge replaced
++trigger: voice DNA session exposed v0.4 gap — creative calibration couldn't transfer
++compression: ~60x achieved (40K+ conversation → ~650 token handoff) without losing calibration
+!regression: v0.5 is additive to v0.4 — all v0.4 sections unchanged, backward compatible
+!skill-repackage: zip delivered twice (once after spec, once after templates)
+-old-profiles: MINIMAL/STANDARD/FULL as content filters — replaced by fidelity dial
+
+§DECISIONS
+[D1] 2026-02-06 "lossless-first philosophy"
+     why: v0.4 profiles silently dropped sections; user never knew what was missing
+     rejected: improved-profiles(still filters), manual-pick(too much friction)
+     liked: Manual pick gives maximum control
+     revisit-when: never — this is the core philosophical shift
+
+[D2] 2026-02-06 "three new sections not one"
+     why: Creative transfer has three distinct primitives: examples, rules, and style
+     rejected: single-CREATIVE-section(conflates different types), VOICE-TUNING(too narrow)
+     liked: VOICE-TUNING was more specific and domain-scoped
+     evaporated: "AIST is for technical work" → creative state needs transfer primitives too
+
+[D3] 2026-02-06 "AIST carries own copy AND references skill"
+     why: Portable by default; if skill loaded, AIST pairs are redundant and skippable
+     rejected: skill-ref-only(breaks if skill not installed), copy-only(duplicates skill)
+     liked: Ref-only is lighter
+
+[D4] 2026-02-06 "Transfer Budget shows concrete losses not section names"
+     why: "3 rounds of voice calibration that took 40 minutes" hits different than "CALIBRATION section"
+     rejected: abstract-descriptions(don't convey value), token-counts-only(don't show what's lost)
+
+[D5] 2026-02-06 "single MAX template with fidelity annotations"
+     why: One template to understand the whole system; annotations show which sections appear at each level
+     rejected: separate-template-per-level(3 files, confusing), no-templates(raw spec only)
+     liked: Separate templates were simple to reason about individually
+
+[D6] 2026-02-06 "merge template always MAX"
+     why: Merges are expensive to redo — preserve everything
+     rejected: fidelity-dial-for-merges(risky, not worth the savings)
+
+§EVOLUTION
+type: expansion
+from: AIST v0.4 — technical state transfer (decisions, code, architecture)
+to: AIST v0.5 — universal state transfer (technical + creative + collaboration)
+trigger: Voice DNA session exposed that creative calibration work had no transfer primitive
+active-scope: v0.5
+regression-guard: v0.5 is additive — do NOT remove v0.4 sections or change their semantics
+
+§THREADS
+[T1] skill-deployed status:complete
+     Skill files (SKILL.md, sections.md, examples.md) updated and packaged
+
+[T2] templates-migrated status:complete
+     All 5 templates (max, minimal, standard, full, merge) on v0.5
+
+[T3] real-world-validation status:not-started effort:ongoing
+     next: Use v0.5 in actual handoffs and see what's missing
+     note: This session IS the first real test — generating this handoff
+
+[T4] sections-ref-update status:not-started effort:1h
+     next: Add full CALIBRATION/HEURISTICS/WORKING-STYLE/TRANSFER-BUDGET specs to sections.md
+     note: Currently added as part of profile guidelines replacement; may need standalone entries
+
+§CALIBRATION
+target: aist-protocol-design
+
+[C1] "section-names-to-concrete-losses"
+     before: "Drops CALIBRATION section"
+     after: "Loses 3 rounds of voice calibration that took 40 minutes"
+     why: Users decide based on value, not labels. Abstract descriptions don't convey what was invested.
+
+[C2] "profiles-as-filters-to-fidelity-as-dial"
+     before: MINIMAL profile = skip IDEAS, IMPLEMENTATION, ARTIFACTS
+     after: MIN fidelity = compressed, but you see what's lost and choose
+     why: The difference is informed consent. Filter vs dial.
+
+[C3] "rules-without-examples-are-ambiguous"
+     before: "Don't use dramatic closers" (rule only)
+     after: "In production that string is half the codebase." → "The string just passes through untouched." + why
+     why: The pair IS the knowledge. Rules compress poorly because boundaries are gradient, not binary.
+
+§HEURISTICS
+scope: aist-protocol-design
+
+[H1] "new-section-test"
+     if: Proposing a new AIST section
+     then: Check if it captures a distinct primitive (not just reorganized data from existing sections)
+     test: "Can I point to real work that was lost because this section didn't exist?"
+     confidence: single-session
+
+[H2] "compression-test"
+     if: Describing what a fidelity level loses
+     then: Frame in concrete terms — time invested, rounds of iteration, specific artifacts
+     test: "Would a user change their fidelity choice based on this description?"
+     confidence: single-session
+
+[H3] "backward-compat-test"
+     if: Changing AIST section semantics
+     then: Ensure v0.4 handoffs still parse. Additions only, no removals.
+     test: "Does a v0.4 handoff loaded into v0.5 lose anything it had before?"
+     confidence: single-session
+
+§WORKING-STYLE
+feedback: concise, approving of direction with occasional Swedish idiom ("rod trad")
+iteration: fast — build it, ship it, refine after seeing real output
+tolerance: low for ceremony, high for ambition; prefers action over discussion
+language: Swedish native, English fluent — directness valued
+
+§IMPLEMENTATION
+[I1] title:"SKILL.md full rewrite v0.4→v0.5"
+     problem: SKILL.md described profile-based system with no creative transfer support
+     solution: Complete rewrite with new philosophy, 3 new sections, transfer budget spec
+     files: /mnt/skills/user/aist-protocol/SKILL.md
+
+[I2] title:"sections.md profile guidelines replacement"
+     problem: Old profile guidelines (MINIMAL/STANDARD/FULL/MERGE) replaced
+     solution: str_replace with fidelity comparison table + v0.5 creative example + transfer budget example
+     files: /mnt/skills/user/aist-protocol/references/sections.md
+
+[I3] title:"examples.md v0.5 examples added"
+     problem: No examples of creative transfer or transfer budget in action
+     solution: Added Example 7 (full creative session with CALIBRATION/HEURISTICS) and Example 8 (budget conversation flow)
+     files: /mnt/skills/user/aist-protocol/references/examples.md
+
+[I4] title:"Template migration v3/v4→v0.5"
+     problem: Templates still on v3 (minimal/standard/full) and v4 (merge)
+     solution: Created handoff-max.aist with fidelity annotations; updated minimal→MIN, standard→LOW, full→HIGH, merge→always MAX
+     files: /mnt/skills/user/aist-protocol/assets/templates/*.aist
+
+§IDEAS
+[ID1] "AIST validator tool" synced:no
+     CLI or web tool that validates .aist files against v0.5 spec — checks required sections,
+     validates fidelity annotations, estimates token count, flags missing concrete loss descriptions
+
+[ID2] "Auto-generate transfer budget from populated sections" synced:no
+     Claude could auto-count tokens per section and generate the budget table without manual estimation
+     constraint-evaporation: true — "token counting is hard for LLMs" may be solvable with tooling
+
+[ID3] "Fidelity negotiation protocol" synced:no
+     Instead of user choosing a level, Claude proposes: "I'd recommend HIGH because CALIBRATION is
+     already in the skill, but IMPLEMENTATION has a fix you'll need." Interactive, not one-shot.
+
+[ID4] "AIST diff between sessions" synced:no
+     Show what changed between two handoffs of the same project — new decisions, evolved threads,
+     updated calibration pairs
+     constraint-evaporation: true — "diffs are for code" → state transfers can diff too
+
+[ID5] "WORKING-STYLE as global skill" synced:no
+     Extract WORKING-STYLE into its own persistent skill (like robiw-voice) so every session
+     knows collaboration preferences without needing an AIST handoff
+     constraint-evaporation: true — "AIST is the transfer mechanism" → some things should persist
+
+[ID6] "Calibration pair library" synced:no
+     Accumulate calibration pairs across sessions into a searchable library per domain.
+     A new Claude could search: "show me all calibration pairs for tweet voice"
+
+§ARTIFACTS
+[A1] type:skill name:"AIST v0.5 Skill Package"
+     semantic: Complete protocol spec with philosophy, sections, examples, and 5 templates
+     file: /mnt/user-data/outputs/aist-protocol-v05.zip
+     essential: true
+
+[A2] type:reference name:"handoff-max.aist"
+     semantic: Master template with fidelity annotations — one file to understand the whole system
+     file: /mnt/skills/user/aist-protocol/assets/templates/handoff-max.aist
+
+§SIGNIFICANCE
+[B1] type:breakthrough title:"Creative state transfer gap"
+     insight: AIST v0.4 was built for technical decisions (binary, discrete).
+     Creative work produces gradient judgments that need different primitives —
+     before/after calibration pairs, self-check heuristics, and workflow mechanics.
+     Discovered by trying to compress a real voice DNA session.
+     impact: HIGH — led to entire v0.5 redesign
+
+[B2] type:discovery title:"Profiles were silent information destroyers"
+     insight: v0.4 profiles decided what to capture, not what to compress.
+     MINIMAL didn't just compress — it never recorded IDEAS or IMPLEMENTATION.
+     The fix wasn't better profiles but separating capture (always full) from transfer (fidelity dial).
+     impact: HIGH — core philosophy change
+
+[B3] type:discovery title:"Concrete loss descriptions change decisions"
+     insight: "Drops CALIBRATION section" is abstract. "Loses 3 rounds of voice work that took 40 min"
+     is visceral. The Transfer Budget works because it speaks in invested effort, not section names.
+     impact: MEDIUM — shapes how protocol is used
+
+§CONSTRAINTS
+HARD:
+  - Token limits are real — can't transfer 40K tokens into a new session (technical)
+  - AIST must be human-readable — no binary encoding (design choice, effectively hard)
+EVAPORATED:
+  - "AIST is for technical work" → creative state needs transfer primitives too
+  - "profiles must exclude sections" → capture everything, compress at transfer
+  - "templates need separate files per level" → one master template with annotations
+QUESTIONING:
+  - "Token counting is hard for LLMs" → tooling might solve this for auto-budgets
+  - "WORKING-STYLE belongs in AIST" → might be better as a persistent global skill
+
+§ENERGY
+mode: shipping
+focus: v0.5 complete, entering validation phase
+momentum: high — two sessions of clean execution
+
+§HANDOFF
+to: next-session
+focus: T3 (real-world validation) — use v0.5 in actual project handoffs
+skip: Protocol design (settled), template structure (done)
+warn: Don't redesign sections — validate with real use first
+warn: sections.md may need standalone entries for new sections (T4)
+regression-guard: v0.5 philosophy is "capture everything, compress at transfer" — do NOT revert to profile-based filtering
+artifact-priority: A1 (skill package for upload)
+
+§TRANSFER-BUDGET
+total-captured: ~950 tokens (18 sections populated)
+context-cost-at-max: ~7% of new session
+
+| Fidelity | Tokens | What's lost                                                        |
+|----------|--------|--------------------------------------------------------------------|
+| MAX      | ~950   | Nothing                                                            |
+| HIGH     | ~700   | ENERGY, CONSTRAINTS, EVOLUTION (philosophy is in ESSENCE already)  |
+| MEDIUM   | ~500   | + 3 CALIBRATION pairs (design principles for the protocol itself)  |
+|          |        | + 3 HEURISTICS (self-check rules for future AIST changes)          |
+| LOW      | ~300   | + 4 IMPLEMENTATIONS (which files changed and how)                  |
+|          |        | + 6 IDEAS (validator tool, auto-budget, fidelity negotiation, etc) |
+|          |        | + WORKING-STYLE (Roberth's collaboration preferences)              |
+| MIN      | ~120   | Everything except ESSENCE + MEMORY + HANDOFF.                      |
+|          |        | Enough to resume template work. Loses all design rationale,        |
+|          |        | 3 protocol calibration pairs, 6 continuation ideas, and the        |
+|          |        | breakthrough insight that creative work needs different primitives. |
+
+recommendation: HIGH — 7% is fine but the CALIBRATION/HEURISTICS here are
+meta-level (rules for designing AIST itself) and less likely to be needed in
+the next session than in a future protocol revision. MEDIUM saves 30% context
+with minimal practical loss. MAX if planning another protocol iteration soon.
