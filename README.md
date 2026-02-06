@@ -2,6 +2,10 @@
 
 **Your AI forgets everything between sessions. Here's an open protocol that fixes it.**
 
+<p align="center">
+  <img src="visual/aist-lifecycle.png" alt="Your Project Has a Lifespan Problem — With AIST vs Without" width="500">
+</p>
+
 AIST is a lightweight, model-agnostic protocol for preserving project state across AI sessions. It compresses 40,000+ tokens of conversation into ~950 tokens of structured state — a 60x compression ratio — so your next session picks up exactly where you left off.
 
 No vendor lock-in. No tooling required. Works on any LLM that reads plain text.
@@ -147,13 +151,13 @@ Ready-to-use templates for different scenarios:
 
 Interactive calculator showing what AIST costs across 68 models in 22 languages.
 
-**[Try it live](https://robiw-dev.github.io/aist-protocol/)** | [`tools/context-calculator.html`](tools/context-calculator.html)
+**[Try it live](https://robiw-dev.github.io/aist-protocol/calculator/)** | [`tools/context-calculator.html`](tools/context-calculator.html)
 
 ### Visual Explainers
 
-Infographics and lifecycle posters explaining AIST — use them in articles, talks, or social posts.
+**[See the lifecycle infographic](https://robiw-dev.github.io/aist-protocol/lifecycle/)** — what happens to your project with and without AIST.
 
-See [`visual/`](visual/) for the full set.
+More infographics and lifecycle posters in [`visual/`](visual/) — use them in articles, talks, or social posts.
 
 ## Examples
 

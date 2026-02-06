@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIST Protocol — Project Lifecycle (Iconic)</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Mono', monospace;
+    background: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    padding: 30px 16px;
+    min-height: 100vh;
+  }
+
+  .poster {
+    max-width: 880px;
+    width: 100%;
+    background: #f5f0e8;
+    color: #1a1a1a;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Grain overlay */
+  .poster::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.03;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .banner {
+    background: #1a1a1a;
+    color: #f5f0e8;
+    text-align: center;
+    padding: 28px 24px 22px;
+    position: relative;
+  }
+  .banner-pre {
+    font-size: 9px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: #8a7e6b;
+    margin-bottom: 10px;
+  }
+  .banner h1 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(24px, 4.5vw, 42px);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    line-height: 1.15;
+  }
+  .banner h1 .green { color: #4adf7c; }
+  .banner h1 .red { color: #e04040; }
+  .banner-sub {
+    margin-top: 10px;
+    font-size: 11px;
+    color: #8a7e6b;
+    letter-spacing: 2px;
+  }
+
+  .twin {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .path {
+    padding: 0;
+    position: relative;
+  }
+  .path-a { border-right: 3px solid #1a1a1a; }
+  .path-b { border-left: 3px solid #1a1a1a; }
+
+  .path-head {
+    text-align: center;
+    padding: 12px 16px;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    border-bottom: 2px solid #1a1a1a;
+  }
+  .path-a .path-head { background: #e8f5ec; color: #1a6a3a; }
+  .path-b .path-head { background: #f5e8e8; color: #8a2020; }
+
+  .stage-card {
+    padding: 18px 20px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    text-align: center;
+  }
+
+  .stage-icon {
+    font-size: 48px;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+
+  .stage-title {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .stage-title.green { color: #1a8a4a; }
+  .stage-title.amber { color: #8a6a10; }
+  .stage-title.red { color: #aa2020; }
+
+  .stage-session {
+    font-size: 9px;
+    color: #8a7e6b;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .stage-body {
+    font-size: 11px;
+    color: #4a4a4a;
+    line-height: 1.5;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  /* Context meter */
+  .meter {
+    margin-top: 10px;
+    height: 12px;
+    background: #e0ddd5;
+    border-radius: 2px;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.1);
+    max-width: 280px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .meter-fill { height: 100%; border-radius: 1px; }
+  .meter-label {
+    font-size: 8px;
+    letter-spacing: 1px;
+    color: #8a7e6b;
+    text-align: center;
+    margin-top: 3px;
+  }
+
+  .arrow-sep {
+    text-align: center;
+    padding: 4px 0;
+    font-size: 18px;
+    line-height: 1;
+  }
+  .arrow-sep.g { color: #4adf7c; }
+  .arrow-sep.r { color: #e04040; }
+
+  /* Outcome strip */
+  .outcome-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 4px solid #1a1a1a;
+  }
+  .outcome-box {
+    padding: 24px 16px;
+    text-align: center;
+  }
+  .outcome-box-a { background: #1a6a3a; color: #f5f0e8; }
+  .outcome-box-b { background: #8a2020; color: #f5f0e8; }
+
+  .outcome-icon { font-size: 44px; line-height: 1; }
+  .outcome-title {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+  .outcome-stat {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-top: 4px;
+  }
+  .outcome-sub {
+    font-size: 9px;
+    letter-spacing: 1px;
+    opacity: 0.7;
+    margin-top: 4px;
+  }
+
+  .footer-strip {
+    background: #1a1a1a;
+    color: #f5f0e8;
+    padding: 18px 24px;
+    text-align: center;
+  }
+  .footer-strip .quote {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(14px, 2.5vw, 20px);
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  .footer-strip .quote .em { color: #4adf7c; }
+  .footer-strip .meta {
+    font-size: 8px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #8a7e6b;
+    margin-top: 10px;
+  }
+
+  @media (max-width: 640px) {
+    .twin, .outcome-strip { grid-template-columns: 1fr; }
+    .path-a { border-right: none; border-bottom: 4px solid #1a1a1a; }
+    .path-b { border-left: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="poster">
+
+  <div class="banner">
+    <div class="banner-pre">A Public Service Announcement for AI Operators</div>
+    <h1>Two Projects Start the Same<br><span class="green">One Blooms</span> · <span class="red">One Dies</span></h1>
+    <div class="banner-sub">The difference is 950 tokens of plain text</div>
+  </div>
+
+  <div class="twin">
+
+    <!-- PATH A -->
+    <div class="path path-a">
+      <div class="path-head">With AIST Protocol</div>
+
+      <div class="stage-card">
+        <div class="stage-icon">&#127793;</div>
+        <div class="stage-title green">Seed Planted</div>
+        <div class="stage-session">SESSION 01</div>
+        <div class="stage-body">New project. Full context window. Boundless potential.</div>
+        <div class="meter"><div class="meter-fill" style="width:100%;background:#4adf7c"></div></div>
+        <div class="meter-label">100% CONTEXT AVAILABLE</div>
+      </div>
+
+      <div class="arrow-sep g">&#9661;</div>
+
+      <div class="stage-card">
+        <div class="stage-icon">&#127794;</div>
+        <div class="stage-title green">Taking Root</div>
+        <div class="stage-session">SESSION 02</div>
+        <div class="stage-body">AIST handoff loaded. 950 tokens. Full state restored. 88% free for work.</div>
+        <div class="meter">
+          <div class="meter-fill" style="width:12%;background:#1a8a4a"></div>
+        </div>
+        <div class="meter-label">AIST: 12% &mdash; 88% FREE</div>
+      </div>
+
+      <div class="arrow-sep g">&#9661;</div>
+
+      <div class="stage-card">
+        <div class="stage-icon">&#127803;</div>
+        <div class="stage-title green">Full Bloom</div>
+        <div class="stage-session">SESSION 10+</div>
+        <div class="stage-body">Same handoff. Same cost. Project flourishing. Operator relaxed.</div>
+        <div class="meter">
+          <div class="meter-fill" style="width:12%;background:#1a8a4a"></div>
+        </div>
+        <div class="meter-label">STILL 12% &mdash; STILL 88% FREE</div>
+      </div>
+
+      <div class="arrow-sep g">&#9661;</div>
+
+      <div class="stage-card">
+        <div class="stage-icon">&#127795;</div>
+        <div class="stage-title green">Eternal Growth</div>
+        <div class="stage-session">SESSION 50, 100, &infin;</div>
+        <div class="stage-body">Project bears fruit forever. Switch models anytime. It's just plain text.</div>
+        <div class="meter">
+          <div class="meter-fill" style="width:12%;background:#1a8a4a"></div>
+        </div>
+        <div class="meter-label">ALWAYS 12% &mdash; &infin; SESSIONS</div>
+      </div>
+    </div>
+
+    <!-- PATH B -->
+    <div class="path path-b">
+      <div class="path-head">Without AIST</div>
+
+      <div class="stage-card">
+        <div class="stage-icon">&#127793;</div>
+        <div class="stage-title amber">Seed Planted</div>
+        <div class="stage-session">SESSION 01</div>
+        <div class="stage-body">Same project. Same model. Same beginning. No preservation plan.</div>
+        <div class="meter"><div class="meter-fill" style="width:100%;background:#d4a843"></div></div>
+        <div class="meter-label">100% CONTEXT AVAILABLE</div>
+      </div>
+
+      <div class="arrow-sep r">&#9661;</div>
+
+      <div class="stage-card">
+        <div class="stage-icon">&#127811;</div>
+        <div class="stage-title amber">Leaves Dropping</div>
+        <div class="stage-session">SESSION 02</div>
+        <div class="stage-body">Recap pasted. ~2,800 tokens just catching up. Workspace shrinking.</div>
+        <div class="meter">
+          <div class="meter-fill" style="width:35%;background:#c08030"></div>
+        </div>
+        <div class="meter-label">RECAP: 35% &mdash; 65% FREE</div>
+      </div>
+
+      <div class="arrow-sep r">&#9661;</div>
+
+      <div class="stage-card">
+        <div class="stage-icon">&#129685;</div>
+        <div class="stage-title red">Wilting</div>
+        <div class="stage-session">SESSION 03&ndash;04</div>
+        <div class="stage-body">Recap grows each session. Model forgets. Hallucinations begin. Quality crashes.</div>
+        <div class="meter">
+          <div class="meter-fill" style="width:70%;background:#c04030"></div>
+        </div>
+        <div class="meter-label">RECAP: 70% &mdash; 30% FREE</div>
+      </div>
+
+      <div class="arrow-sep r">&#9661;</div>
+
+      <div class="stage-card">
+        <div class="stage-icon">&#9760;</div>
+        <div class="stage-title red">Dead</div>
+        <div class="stage-session">SESSION 05</div>
+        <div class="stage-body">No room to work. Context exhausted. Project abandoned. Start over.</div>
+        <div class="meter">
+          <div class="meter-fill" style="width:100%;background:#8a2020"></div>
+        </div>
+        <div class="meter-label">RECAP: 100% &mdash; 0% FREE</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- OUTCOMES -->
+  <div class="outcome-strip">
+    <div class="outcome-box outcome-box-a">
+      <div class="outcome-icon">&#127795;</div>
+      <div class="outcome-title">Eternal Bloom</div>
+      <div class="outcome-stat">&infin;</div>
+      <div class="outcome-sub">Sessions · Same cost · Any LLM</div>
+    </div>
+    <div class="outcome-box outcome-box-b">
+      <div class="outcome-icon">&#9760;</div>
+      <div class="outcome-title">Terminal Failure</div>
+      <div class="outcome-stat">~3&ndash;5</div>
+      <div class="outcome-sub">Sessions on 8K model · Then nothing</div>
+    </div>
+  </div>
+
+  <div class="footer-strip">
+    <div class="quote">Recaps grow. Handoffs <span class="em">don't.</span><br>That's the whole story.</div>
+    <div class="meta">AIST Protocol v0.5 · Open Source · CC BY-SA 4.0 · Plain text · Any LLM · No vendor lock-in</div>
+  </div>
+
+</div>
+
+</body>
+</html>
